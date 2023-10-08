@@ -23,6 +23,6 @@ public class Shop {
 
     private String image;
 
-    @OneToOne(mappedBy = "address_shop")
+    @OneToOne(mappedBy = "shop")
     private AddressShop addressShop;
 }

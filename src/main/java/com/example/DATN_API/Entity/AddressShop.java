@@ -17,7 +17,7 @@ public class AddressShop {
 
     @OneToOne
     @JoinColumn(name = "id_shop")
-    private Shop addressShop;
+    private Shop shop;
 
     private String city;
 

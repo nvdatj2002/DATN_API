@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -23,11 +24,13 @@ public class Order {
 
     @OneToOne
     @JoinColumn(name = "id_address_order")
-    private AddressOrder address_order;
+    private AddressOrder address;
 
-    @OneToMany(mappedBy = "status_order")
-    private StatusOrder status;
+    @OneToMany(mappedBy = "order")
+    private List<StatusOrder> status;
 
     private boolean pay;
 
+    @OneToMany(mappedBy = "order")
+    private List<OrderDetail> orderDetails;
 }

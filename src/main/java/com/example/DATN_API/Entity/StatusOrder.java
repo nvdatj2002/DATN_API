@@ -1,5 +1,6 @@
 package com.example.DATN_API.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,10 +18,12 @@ public class StatusOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_status")
-    @Column(name = "id_status")
     private Status status;
 
-
+    @ManyToOne
+    @JoinColumn(name = "id_order")
+    @JsonIgnore
+    private Order order;
 }

@@ -1,33 +1,29 @@
 package com.example.DATN_API.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "category")
-public class Category {
+@Table(name = "comment_product")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    private String type_category;
-
-    private Date create_date;
-
     @ManyToOne
     @JoinColumn(name = "create_by")
-    @JsonIgnore
-    private Account create_by;
+    private Account account_comment;
 
-    @OneToMany(mappedBy = "category")
-    private List<CategoryItem> categoryItems;
+    @ManyToOne
+    @JoinColumn(name = "id_product")
+    private Product product_comment;
+
+    @OneToMany(mappedBy = "comment")
+    private List<CommentDetail> comment_details;
 }

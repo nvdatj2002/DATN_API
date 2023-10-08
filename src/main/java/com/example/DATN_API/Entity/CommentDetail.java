@@ -6,21 +6,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "status")
-public class Status {
+@Table(name = "rep_comment_product")
+public class CommentDetail {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String name;
-
-    @OneToMany(mappedBy = "status")
+    @ManyToOne
+    @JoinColumn(name = "id_comment")
     @JsonIgnore
-    private List<StatusOrder> statusOrder;
+    private Comment comment;
+
+    @ManyToOne
+    @JoinColumn(name = "create_by")
+    private Account account_comment_details;
+
 }
