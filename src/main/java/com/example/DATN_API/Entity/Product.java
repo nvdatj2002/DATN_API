@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -26,7 +27,7 @@ public class Product {
     private String product_name;
 
     @OneToMany(mappedBy = "product_image")
-    private ImageProduct image_product;
+    private List<ImageProduct> image_product;
 
     private double price;
 
@@ -44,4 +45,11 @@ public class Product {
 
     @OneToOne(mappedBy = "product_like")
     private LikeProduct likeProduct;
+
+    @OneToOne(mappedBy = "product")
+    @JsonIgnore
+    private OrderDetail orderDetail;
+
+    @OneToMany(mappedBy = "product_comment")
+    private List<Comment> comments;
 }

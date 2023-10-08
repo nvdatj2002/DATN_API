@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,8 +31,8 @@ public class InfoAccount {
 
     private boolean gender;
 
-    @OneToMany(mappedBy = "info_account")
-    private AddressAccount address_account;
+    @OneToMany(mappedBy = "account")
+    private List<AddressAccount> address_account;
 
     private String email;
 

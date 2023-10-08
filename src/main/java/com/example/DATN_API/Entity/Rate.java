@@ -6,21 +6,26 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "status")
-public class Status {
+@Table(name = "rate")
+public class Rate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String name;
-
-    @OneToMany(mappedBy = "status")
+    @OneToOne
+    @JoinColumn(name = "id_product")
     @JsonIgnore
-    private List<StatusOrder> statusOrder;
+    private Product product_rate;
+
+    private int star;
+
+    private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "create_by")
+    private Account account_rate;
 }
