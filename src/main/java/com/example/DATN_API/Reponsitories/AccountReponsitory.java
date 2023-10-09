@@ -1,3 +1,4 @@
+/*
 package com.example.DATN_API.Reponsitories;
 
 import com.example.DATN_API.Entity.Account;
@@ -12,3 +13,4 @@ public interface AccountReponsitory extends JpaRepository<Account, String> {
     @Query("select acc from Account ")
     Page<Account>
 }
+*/

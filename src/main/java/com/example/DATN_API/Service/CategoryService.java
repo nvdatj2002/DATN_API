@@ -41,6 +41,7 @@ public class CategoryService {
 	}
 
 	public Boolean existsByIdCategory(Integer id) {
+
 		return CategoryReponsitory.existsById(id) ? true : false;
 	}
 

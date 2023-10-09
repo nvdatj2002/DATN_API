@@ -43,10 +43,6 @@ public class CategoryController {
 
 	@PostMapping()
 	public ResponseEntity<ResponObject> create(@RequestBody Category Category) {
-		if (!CategoryService.existsByIdCategory(Category.getId()))
-			return new ResponseEntity<>(new ResponObject("BAD_REQUEST", "Category already exists.", Category),
-					HttpStatus.BAD_REQUEST);
-
 		CategoryService.createCategory(Category);
 		return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been added.", Category),
 				HttpStatus.CREATED);
@@ -89,35 +85,31 @@ public class CategoryController {
 	}
 
 	@PostMapping("/categoryItem")
-	public ResponseEntity<ResponObject> createCategoryItem(@RequestBody CategoryItem Category) {
-		if (!CategoryService.existsByIdCategoryItem(Category.getId()))
-			return new ResponseEntity<>(new ResponObject("BAD_REQUEST", "Category already exists.", Category),
-					HttpStatus.BAD_REQUEST);
-
-		CategoryService.createCategoryItem(Category);
-		return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been added.", Category),
+	public ResponseEntity<ResponObject> createCategoryItem(@RequestBody CategoryItem categoryItem) {
+		System.out.println(categoryItem.toString());
+		CategoryService.createCategoryItem(categoryItem);
+		return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", categoryItem),
 				HttpStatus.CREATED);
-
 	}
 
 	@PutMapping("/categoryItem/{id}")
 	public ResponseEntity<ResponObject> updateCategoryItem(@PathVariable Integer id, @RequestBody CategoryItem Category) {
 		if (!CategoryService.existsByIdCategoryItem(id))
 			return new ResponseEntity<>(
-					new ResponObject("NOT_FOUND", "Category_id: " + id + " does not exists.", Category),
+					new ResponObject("NOT_FOUND", "CategoryItem_id: " + id + " does not exists.", Category),
 					HttpStatus.NOT_FOUND);
 
 		CategoryService.updateCategoryItem(id, Category);
-		return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been updated.", Category), HttpStatus.OK);
+		return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been updated.", Category), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/categoryItem/{id}")
 	public ResponseEntity<ResponObject> deleteCategoryItem(@PathVariable Integer id) {
 		if (!CategoryService.existsByIdCategoryItem(id))
-			return new ResponseEntity<>(new ResponObject("NOT_FOUND", "Category_id: " + id + " does not exists.", id),
+			return new ResponseEntity<>(new ResponObject("NOT_FOUND", "CategoryItem_id: " + id + " does not exists.", id),
 					HttpStatus.NOT_FOUND);
 		CategoryService.deleteCategoryItem(id);
-		return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been deleted.", id), HttpStatus.OK);
+		return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been deleted.", id), HttpStatus.OK);
 	}
 
 }

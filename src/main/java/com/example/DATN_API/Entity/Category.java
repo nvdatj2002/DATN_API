@@ -16,18 +16,18 @@ import java.util.List;
 @Table(name = "category")
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String type_category;
 
-    private Date create_date;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "create_date")
+    Date create_date = new Date();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "category")
+    public List<CategoryItem> listCategory;
 
     @ManyToOne
-    @JoinColumn(name = "create_by")
-    @JsonIgnore
-    private Account create_by;
-
-    @OneToMany(mappedBy = "category")
-    private List<CategoryItem> categoryItems;
+    @JoinColumn(name = "id_account")
+    private Account id_account;
 }

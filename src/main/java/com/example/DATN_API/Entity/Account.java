@@ -16,29 +16,16 @@ import java.util.List;
 @Table(name = "account")
 public class Account {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String username;
     private String password;
     private Date create_date;
-
-    @OneToOne(mappedBy = "account")
-    private InfoAccount info_account;
     private boolean status;
-
-    @OneToMany(mappedBy = "account_like")
-    private List<LikeProduct> products_like;
-
     @JsonIgnore
-    @OneToMany(mappedBy = "account_rate")
-    private List<Rate> rates;
-
+    @OneToMany(mappedBy = "id_account")
+    public List<Category> listCategory;
     @JsonIgnore
-    @OneToMany(mappedBy = "account_comment")
-    private List<Comment> comments;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "account_comment_details")
-    private List<CommentDetail> comment_details;
-
-    @OneToMany(mappedBy = "account_role")
-    private List<RoleAccount> role;
+    @OneToMany(mappedBy = "account")
+    public List<CategoryItem> listCategoryItem;
 }

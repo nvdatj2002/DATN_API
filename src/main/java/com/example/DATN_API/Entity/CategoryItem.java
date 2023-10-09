@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString
 @Table(name = "category_item")
 public class CategoryItem {
     @Id
@@ -20,19 +22,16 @@ public class CategoryItem {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "type_category")
-    @JsonIgnore
+    @JoinColumn(name = "id_category")
     private Category category;
 
     private String type_category_item;
 
-    private Date create_date;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "create_date")
+    Date create_date = new Date();
 
     @ManyToOne
-    @JoinColumn(name = "create_by")
-    @JsonIgnore
+    @JoinColumn(name = "id_account")
     private Account account;
-
-    @OneToMany(mappedBy = "category_product")
-    private List<Product> products;
 }
