@@ -5,10 +5,10 @@ package com.example.DATN_API.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.DATN_API.Entity.ShopAddressEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.DATN_API.Entity.AddressShop;
 import com.example.DATN_API.Reponsitories.AddressShopReponsitory;
 
 @Service
@@ -16,20 +16,20 @@ public class AddressShopService {
 	@Autowired
 	AddressShopReponsitory AddressShopReponsitory;
 
-	public List<AddressShop> findAll() {
+	public List<ShopAddressEntity> findAll() {
 		return AddressShopReponsitory.findAll();
 	}
 
-	public AddressShop findById(int id) {
-		Optional<AddressShop> AddressShop = AddressShopReponsitory.findById(id);
+	public ShopAddressEntity findById(int id) {
+		Optional<ShopAddressEntity> AddressShop = AddressShopReponsitory.findById(id);
 		return AddressShop.get();
 	}
 	
-	public void createAddressShop(AddressShop AddressShop) {
+	public void createAddressShop(ShopAddressEntity AddressShop) {
 		AddressShopReponsitory.save(AddressShop);
 	}
 	
-	public void updateAddressShop(int id,AddressShop AddressShop) {
+	public void updateAddressShop(int id,ShopAddressEntity AddressShop) {
 		AddressShop.setId(id);
 		AddressShopReponsitory.save(AddressShop);
 	}

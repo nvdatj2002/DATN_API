@@ -1,10 +1,9 @@
 package com.example.DATN_API.Reponsitories;
 
-import com.example.DATN_API.Entity.LikeProduct;
-import com.example.DATN_API.Entity.Product;
+import com.example.DATN_API.Entity.LikeProductEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LikeProductReponsitory extends JpaRepository<LikeProduct, Integer> {
+public interface LikeProductReponsitory extends JpaRepository<LikeProductEntity, Integer> {
 }

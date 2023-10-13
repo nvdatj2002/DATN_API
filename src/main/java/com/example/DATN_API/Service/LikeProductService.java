@@ -5,10 +5,10 @@ package com.example.DATN_API.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.DATN_API.Entity.LikeProductEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.DATN_API.Entity.LikeProduct;
 import com.example.DATN_API.Reponsitories.LikeProductReponsitory;
 
 @Service
@@ -16,20 +16,20 @@ public class LikeProductService {
 	@Autowired
 	LikeProductReponsitory LikeProductReponsitory;
 
-	public List<LikeProduct> findAll() {
+	public List<LikeProductEntity> findAll() {
 		return LikeProductReponsitory.findAll();
 	}
 
-	public LikeProduct findById(int id) {
-		Optional<LikeProduct> LikeProduct = LikeProductReponsitory.findById(id);
+	public LikeProductEntity findById(int id) {
+		Optional<LikeProductEntity> LikeProduct = LikeProductReponsitory.findById(id);
 		return LikeProduct.get();
 	}
 	
-	public void createLikeProduct(LikeProduct LikeProduct) {
+	public void createLikeProduct(LikeProductEntity LikeProduct) {
 		LikeProductReponsitory.save(LikeProduct);
 	}
 	
-	public void updateLikeProduct(int id,LikeProduct LikeProduct) {
+	public void updateLikeProduct(int id,LikeProductEntity LikeProduct) {
 		LikeProduct.setId(id);
 		LikeProductReponsitory.save(LikeProduct);
 	}
