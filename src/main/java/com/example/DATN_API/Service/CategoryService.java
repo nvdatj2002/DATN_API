@@ -3,8 +3,8 @@ package com.example.DATN_API.Service;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.DATN_API.Entity.CategoryEntity;
-import com.example.DATN_API.Entity.CategoryItemEntity;
+import com.example.DATN_API.Entity.Category;
+import com.example.DATN_API.Entity.CategoryItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,22 +18,22 @@ public class CategoryService {
 	@Autowired
 	CategoryItemReponsitory CategoryItemReponsitory;
 
-	public List<CategoryEntity> findAllCategory() {
+	public List<Category> findAllCategory() {
 		return CategoryReponsitory.findAll();
 	}
 
-	public CategoryEntity findByIdCategory(int id) {
-		Optional<CategoryEntity> CategoryEntity = CategoryReponsitory.findById(id);
-		return CategoryEntity.get();
+	public Category findByIdCategory(int id) {
+		Optional<Category> Category = CategoryReponsitory.findById(id);
+		return Category.get();
 	}
 
-	public void createCategory(CategoryEntity CategoryEntity) {
-		CategoryReponsitory.save(CategoryEntity);
+	public void createCategory(Category Category) {
+		CategoryReponsitory.save(Category);
 	}
 
-	public void updateCategory(int id, CategoryEntity CategoryEntity) {
-		CategoryEntity.setId(id);
-		CategoryReponsitory.save(CategoryEntity);
+	public void updateCategory(int id, Category Category) {
+		Category.setId(id);
+		CategoryReponsitory.save(Category);
 	}
 
 	public void deleteCategory(int id) {
@@ -45,23 +45,23 @@ public class CategoryService {
 		return CategoryReponsitory.existsById(id) ? true : false;
 	}
 
-	// CategoryEntityItem
-	public List<CategoryItemEntity> findAllCategoryItem() {
+	// CategoryItem
+	public List<CategoryItem> findAllCategoryItem() {
 		return CategoryItemReponsitory.findAll();
 	}
 
-	public CategoryItemEntity findByIdCategoryItem(int id) {
-		Optional<CategoryItemEntity> CategoryEntity = CategoryItemReponsitory.findById(id);
-		return CategoryEntity.get();
+	public CategoryItem findByIdCategoryItem(int id) {
+		Optional<CategoryItem> Category = CategoryItemReponsitory.findById(id);
+		return Category.get();
 	}
 
-	public void createCategoryItem(CategoryItemEntity CategoryEntity) {
-		CategoryItemReponsitory.save(CategoryEntity);
+	public void createCategoryItem(CategoryItem Category) {
+		CategoryItemReponsitory.save(Category);
 	}
 
-	public void updateCategoryItem(int id, CategoryItemEntity CategoryEntityItem) {
-		CategoryEntityItem.setId(id);
-		CategoryItemReponsitory.save(CategoryEntityItem);
+	public void updateCategoryItem(int id, CategoryItem CategoryItem) {
+		CategoryItem.setId(id);
+		CategoryItemReponsitory.save(CategoryItem);
 	}
 
 	public void deleteCategoryItem(int id) {

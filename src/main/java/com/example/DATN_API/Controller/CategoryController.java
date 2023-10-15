@@ -2,8 +2,8 @@ package com.example.DATN_API.Controller;
 
 import java.util.List;
 
-import com.example.DATN_API.Entity.CategoryEntity;
-import com.example.DATN_API.Entity.CategoryItemEntity;
+import com.example.DATN_API.Entity.Category;
+import com.example.DATN_API.Entity.CategoryItem;
 import com.example.DATN_API.Entity.ResponObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,12 +28,12 @@ public class CategoryController {
 	CategoryService CategoryService;
 
 	@GetMapping()
-	public ResponseEntity<List<CategoryEntity>> getAll() {
+	public ResponseEntity<List<Category>> getAll() {
 		return new ResponseEntity<>(CategoryService.findAllCategory(), HttpStatus.OK);
 	}
 
 	@GetMapping("{id}")
-	public ResponseEntity<CategoryEntity> findById(@PathVariable Integer id) {
+	public ResponseEntity<Category> findById(@PathVariable Integer id) {
 		if (CategoryService.existsByIdCategory(id)) {
 			return new ResponseEntity<>(CategoryService.findByIdCategory(id), HttpStatus.OK);
 		}
@@ -41,7 +41,7 @@ public class CategoryController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<ResponObject> create(@RequestBody CategoryEntity Category) {
+	public ResponseEntity<ResponObject> create(@RequestBody Category Category) {
 		CategoryService.createCategory(Category);
 		return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been added.", Category),
 				HttpStatus.CREATED);
@@ -49,7 +49,7 @@ public class CategoryController {
 	}
 
 	@PutMapping("{id}")
-	public ResponseEntity<ResponObject> update(@PathVariable Integer id, @RequestBody CategoryEntity Category) {
+	public ResponseEntity<ResponObject> update(@PathVariable Integer id, @RequestBody Category Category) {
 		if (!CategoryService.existsByIdCategory(id))
 			return new ResponseEntity<>(
 					new ResponObject("NOT_FOUND", "Category_id: " + id + " does not exists.", Category),
@@ -71,12 +71,12 @@ public class CategoryController {
 	
 	//CategoryItem
 	@GetMapping("/categoryItem")
-	public ResponseEntity<List<CategoryItemEntity>> getAllCategoryItem() {
+	public ResponseEntity<List<CategoryItem>> getAllCategoryItem() {
 		return new ResponseEntity<>(CategoryService.findAllCategoryItem(), HttpStatus.OK);
 	}
 
 	@GetMapping("/categoryItem/{id}")
-	public ResponseEntity<CategoryItemEntity> findByIdCategoryItem(@PathVariable Integer id) {
+	public ResponseEntity<CategoryItem> findByIdCategoryItem(@PathVariable Integer id) {
 		if (CategoryService.existsByIdCategoryItem(id)) {
 			return new ResponseEntity<>(CategoryService.findByIdCategoryItem(id), HttpStatus.OK);
 		}
@@ -84,14 +84,14 @@ public class CategoryController {
 	}
 
 	@PostMapping("/categoryItem")
-	public ResponseEntity<ResponObject> createCategoryItem(@RequestBody CategoryItemEntity categoryItem) {
+	public ResponseEntity<ResponObject> createCategoryItem(@RequestBody CategoryItem categoryItem) {
 		CategoryService.createCategoryItem(categoryItem);
 		return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", categoryItem),
 				HttpStatus.CREATED);
 	}
 
 	@PutMapping("/categoryItem/{id}")
-	public ResponseEntity<ResponObject> updateCategoryItem(@PathVariable Integer id, @RequestBody CategoryItemEntity Category) {
+	public ResponseEntity<ResponObject> updateCategoryItem(@PathVariable Integer id, @RequestBody CategoryItem Category) {
 		if (!CategoryService.existsByIdCategoryItem(id))
 			return new ResponseEntity<>(
 					new ResponObject("NOT_FOUND", "CategoryItem_id: " + id + " does not exists.", Category),

@@ -1,11 +1,10 @@
 package com.example.DATN_API.Reponsitories;
 
-import com.example.DATN_API.Entity.CategoryEntity;
-import com.example.DATN_API.Entity.CategoryItemEntity;
+import com.example.DATN_API.Entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CategoryReponsitory extends JpaRepository<CategoryEntity, Integer> {
+public interface CategoryReponsitory extends JpaRepository<Category, Integer> {
 
 }

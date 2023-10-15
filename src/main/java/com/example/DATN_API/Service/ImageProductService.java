@@ -3,7 +3,7 @@ package com.example.DATN_API.Service;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.DATN_API.Entity.ImageProductEntity;
+import com.example.DATN_API.Entity.ImageProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,22 +14,22 @@ public class ImageProductService {
 	@Autowired
 	ImageProductReponsitory ImageProductReponsitory;
 
-	public List<ImageProductEntity> findAll() {
+	public List<ImageProduct> findAll() {
 		return ImageProductReponsitory.findAll();
 	}
 
-	public ImageProductEntity findById(int id) {
-		Optional<ImageProductEntity> ImageProductEntity = ImageProductReponsitory.findById(id);
-		return ImageProductEntity.get();
+	public ImageProduct findById(int id) {
+		Optional<ImageProduct> ImageProduct = ImageProductReponsitory.findById(id);
+		return ImageProduct.get();
 	}
 
-	public void createImageProduct(ImageProductEntity ImageProductEntity) {
-		ImageProductReponsitory.save(ImageProductEntity);
+	public void createImageProduct(ImageProduct ImageProduct) {
+		ImageProductReponsitory.save(ImageProduct);
 	}
 
-	public void updateImageProduct(int id, ImageProductEntity ImageProductEntity) {
-		ImageProductEntity.setId(id);
-		ImageProductReponsitory.save(ImageProductEntity);
+	public void updateImageProduct(int id, ImageProduct ImageProduct) {
+		ImageProduct.setId(id);
+		ImageProductReponsitory.save(ImageProduct);
 	}
 
 	public void deleteImageProduct(int id) {

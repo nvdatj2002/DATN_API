@@ -2,7 +2,7 @@ package com.example.DATN_API.Service;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.DATN_API.Entity.ProductEntity;
+import com.example.DATN_API.Entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,20 +13,20 @@ public class ProductService {
 	@Autowired
 	ProductReponsitory productReponsitory;
 
-	public List<ProductEntity> findAll() {
+	public List<Product> findAll() {
 		return productReponsitory.findAll();
 	}
 
-	public ProductEntity findById(int id) {
-		Optional<ProductEntity> product = productReponsitory.findById(id);
+	public Product findById(int id) {
+		Optional<Product> product = productReponsitory.findById(id);
 		return product.get();
 	}
 	
-	public void createProduct(ProductEntity product) {
+	public void createProduct(Product product) {
 		productReponsitory.save(product);
 	}
 	
-	public void updateProduct(int id,ProductEntity product) {
+	public void updateProduct(int id,Product product) {
 		product.setId(id);
 		productReponsitory.save(product);
 	}

@@ -5,7 +5,7 @@ package com.example.DATN_API.Service;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.DATN_API.Entity.StatusEntity;
+import com.example.DATN_API.Entity.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,20 +16,20 @@ public class StatusService {
 	@Autowired
 	StatusReponsitory StatusReponsitory;
 
-	public List<StatusEntity> findAll() {
+	public List<Status> findAll() {
 		return StatusReponsitory.findAll();
 	}
 
-	public StatusEntity findById(int id) {
-		Optional<StatusEntity> Status = StatusReponsitory.findById(id);
+	public Status findById(int id) {
+		Optional<Status> Status = StatusReponsitory.findById(id);
 		return Status.get();
 	}
 	
-	public void createStatus(StatusEntity Status) {
+	public void createStatus(Status Status) {
 		StatusReponsitory.save(Status);
 	}
 	
-	public void updateStatus(int id,StatusEntity Status) {
+	public void updateStatus(int id,Status Status) {
 		Status.setId(id);
 		StatusReponsitory.save(Status);
 	}

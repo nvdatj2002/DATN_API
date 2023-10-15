@@ -2,7 +2,7 @@ package com.example.DATN_API.Controller;
 
 import java.util.List;
 
-import com.example.DATN_API.Entity.ProductEntity;
+import com.example.DATN_API.Entity.Product;
 import com.example.DATN_API.Entity.ResponObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,12 +27,12 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping()
-    public ResponseEntity<List<ProductEntity>> getAll() {
+    public ResponseEntity<List<Product>> getAll() {
         return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ProductEntity> findById(@PathVariable Integer id) {
+    public ResponseEntity<Product> findById(@PathVariable Integer id) {
         if (productService.existsById(id)) {
             return new ResponseEntity<>(productService.findById(id), HttpStatus.OK);
         }
@@ -40,7 +40,7 @@ public class ProductController {
     }
 
     @PostMapping()
-    public ResponseEntity<ResponObject> create(@RequestBody ProductEntity product) {
+    public ResponseEntity<ResponObject> create(@RequestBody Product product) {
         productService.createProduct(product);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "Product has been added.", product),
                 HttpStatus.CREATED);
@@ -48,7 +48,7 @@ public class ProductController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ResponObject> update(@PathVariable Integer id, @RequestBody ProductEntity product) {
+    public ResponseEntity<ResponObject> update(@PathVariable Integer id, @RequestBody Product product) {
         if (!productService.existsById(id))
             return new ResponseEntity<>(
                     new ResponObject("NOT_FOUND", "Product_id: " + id + " does not exists.", product),

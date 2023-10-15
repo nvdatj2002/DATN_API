@@ -1,7 +1,7 @@
 package com.example.DATN_API.Controller;
 
-import com.example.DATN_API.Entity.ImageProductEntity;
-import com.example.DATN_API.Entity.ProductEntity;
+import com.example.DATN_API.Entity.ImageProduct;
+import com.example.DATN_API.Entity.Product;
 import com.example.DATN_API.Entity.ResponObject;
 import com.example.DATN_API.Service.IStorageSerivce;
 import com.example.DATN_API.Service.ImageProductService;
@@ -26,7 +26,7 @@ public class FileUploadController {
     ImageProductService imageProductService;
 
     @GetMapping()
-    public ResponseEntity<List<ImageProductEntity>> getAll() {
+    public ResponseEntity<List<ImageProduct>> getAll() {
         return new ResponseEntity<>(imageProductService.findAll(), HttpStatus.OK);
     }
     @GetMapping("/{fileName:.+}")
@@ -41,25 +41,25 @@ public class FileUploadController {
 
     @PostMapping
     public ResponseEntity<ResponObject> uploadFile(@RequestParam("file") MultipartFile file,
-                                                   @RequestParam("idProduct") Optional<Integer> idProduct) {
+                                                   @RequestParam Product idProduct) {
         String name = iStorageSerivce.storeFile(file);
-        ImageProductEntity imageProductEntity = new ImageProductEntity();
-        imageProductEntity.setIdProduct(idProduct.get());
-        imageProductEntity.setUrl(name);
-        imageProductService.createImageProduct(imageProductEntity);
+        ImageProduct ImageProduct = new ImageProduct();
+        ImageProduct.setProduct_image(idProduct);
+        ImageProduct.setUrl(name);
+        imageProductService.createImageProduct(ImageProduct);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "Image has been added.", name),
                 HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
     public ResponseEntity<ResponObject> UpdateFile(@PathVariable("id") Integer id, @RequestParam("file") MultipartFile file,
-                                                   @RequestParam Optional<Integer> idProduct) {
+                                                   @RequestParam Product idProduct) {
 
         String name = iStorageSerivce.storeFile(file);
-        ImageProductEntity imageProductEntity = new ImageProductEntity();
-        imageProductEntity.setIdProduct(idProduct.get());
-        imageProductEntity.setUrl(name);
-        imageProductService.updateImageProduct(id, imageProductEntity);
+        ImageProduct ImageProduct = new ImageProduct();
+        ImageProduct.setProduct_image(idProduct);
+        ImageProduct.setUrl(name);
+        imageProductService.updateImageProduct(id, ImageProduct);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "Image has been updated.", name),
                 HttpStatus.CREATED);
     }
