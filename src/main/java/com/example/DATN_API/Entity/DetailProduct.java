@@ -18,8 +18,7 @@ public class DetailProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String color;
-    private int size;
+
     private int quantity;
     private Date create_date;
 

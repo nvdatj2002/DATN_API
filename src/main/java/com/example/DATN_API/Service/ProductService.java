@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.DATN_API.Reponsitories.ProductReponsitory;
-
 @Service
 public class ProductService {
 	@Autowired
@@ -22,8 +21,15 @@ public class ProductService {
 		return product.get();
 	}
 	
-	public void createProduct(Product product) {
-		productReponsitory.save(product);
+	public Product createProduct(Product product) {
+		try {
+			Product productsave= productReponsitory.save(product);
+			return productsave;
+		}catch (Exception e) {
+			e.printStackTrace();
+			LogError.saveToLog(e);
+		}
+		return null;
 	}
 	
 	public void updateProduct(int id,Product product) {

@@ -1,6 +1,8 @@
 package com.example.DATN_API.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "category")
+
 public class Category {
     @Id
     private int id;
@@ -27,7 +30,6 @@ public class Category {
     @OneToMany(mappedBy = "category")
     public List<CategoryItem> listCategory;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_account")
     private Account accountCreateCategory;

@@ -1,6 +1,6 @@
 package com.example.DATN_API.Entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +17,7 @@ import java.util.List;
 @Entity
 @ToString
 @Table(name = "category_item")
+
 public class CategoryItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +38,7 @@ public class CategoryItem {
 //    @JoinColumn(name = "id_account")
 //    private Account account;
 
-    @OneToMany(mappedBy = "category_product")
+    @OneToMany(mappedBy = "categoryItem_product")
+            @JsonIgnore
     List<Product> products;
 }

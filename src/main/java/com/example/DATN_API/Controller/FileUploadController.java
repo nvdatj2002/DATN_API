@@ -5,6 +5,7 @@ import com.example.DATN_API.Entity.Product;
 import com.example.DATN_API.Entity.ResponObject;
 import com.example.DATN_API.Service.IStorageSerivce;
 import com.example.DATN_API.Service.ImageProductService;
+import com.example.DATN_API.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,18 +14,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 @RequestMapping(path = "/api/uploadImageProduct")
 public class FileUploadController {
     @Autowired
     IStorageSerivce iStorageSerivce;
     @Autowired
     ImageProductService imageProductService;
-
+    @Autowired
+    ProductService productService;
     @GetMapping()
     public ResponseEntity<List<ImageProduct>> getAll() {
         return new ResponseEntity<>(imageProductService.findAll(), HttpStatus.OK);
@@ -39,29 +40,34 @@ public class FileUploadController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<ResponObject> uploadFile(@RequestParam("file") MultipartFile file,
-                                                   @RequestParam Product idProduct) {
-        String name = iStorageSerivce.storeFile(file);
-        ImageProduct ImageProduct = new ImageProduct();
-        ImageProduct.setProduct_image(idProduct);
-        ImageProduct.setUrl(name);
-        imageProductService.createImageProduct(ImageProduct);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "Image has been added.", name),
+    @PostMapping()
+    public ResponseEntity<ResponObject> uploadFile(@RequestParam("images") List<MultipartFile> file,
+                                                   @RequestParam("idProduct") int idProduct) {
+
+        Product product=productService.findById((idProduct));
+        for (MultipartFile item: file
+        ) {
+            String name = iStorageSerivce.storeFile(item);
+            ImageProduct ImageProduct = new ImageProduct();
+            ImageProduct.setProduct_image(product);
+            ImageProduct.setUrl(name);
+            imageProductService.createImageProduct(ImageProduct);
+        }
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "Image has been added.", "name"),
                 HttpStatus.CREATED);
     }
-
     @PutMapping("{id}")
-    public ResponseEntity<ResponObject> UpdateFile(@PathVariable("id") Integer id, @RequestParam("file") MultipartFile file,
-                                                   @RequestParam Product idProduct) {
+    public ResponseEntity<ResponObject> UpdateFile(@PathVariable("id") Integer id, @RequestParam("images") List<MultipartFile> file,
+                                                   @RequestParam("idProduct") int idProduct) {
 
-        String name = iStorageSerivce.storeFile(file);
-        ImageProduct ImageProduct = new ImageProduct();
-        ImageProduct.setProduct_image(idProduct);
-        ImageProduct.setUrl(name);
-        imageProductService.updateImageProduct(id, ImageProduct);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "Image has been updated.", name),
-                HttpStatus.CREATED);
+//        String name = iStorageSerivce.storeFile(file);
+//        ImageProduct ImageProduct = new ImageProduct();
+//        ImageProduct.setId_product(idProduct);
+//        ImageProduct.setUrl(name);
+//        imageProductService.updateImageProduct(id, ImageProduct);
+//        return new ResponseEntity<>(new ResponObject("SUCCESS", "Image has been updated.", name),
+//                HttpStatus.CREATED);
+        return null;
     }
 
 

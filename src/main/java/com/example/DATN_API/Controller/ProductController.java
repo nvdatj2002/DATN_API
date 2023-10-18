@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.example.DATN_API.Entity.Product;
 import com.example.DATN_API.Entity.ResponObject;
+import com.example.DATN_API.Entity.Shop;
+import com.example.DATN_API.Service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,8 @@ import com.example.DATN_API.Service.ProductService;
 public class ProductController {
     @Autowired
     ProductService productService;
-
+    @Autowired
+    ShopService shopService;
     @GetMapping()
     public ResponseEntity<List<Product>> getAll() {
         return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
@@ -39,10 +42,12 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping()
-    public ResponseEntity<ResponObject> create(@RequestBody Product product) {
-        productService.createProduct(product);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "Product has been added.", product),
+    @PostMapping("/shop/{shop}")
+    public ResponseEntity<ResponObject> create(@PathVariable("shop") int shop,@RequestBody Product product) {
+        Shop shop2=shopService.findById(shop);
+        product.setShop(shop2);
+        Product productnew= productService.createProduct(product);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "Product has been added.",productnew),
                 HttpStatus.CREATED);
 
     }

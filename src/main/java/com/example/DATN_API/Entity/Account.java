@@ -25,6 +25,7 @@ public class Account {
 
 
     @OneToMany(mappedBy = "accountCreateCategory")
+    @JsonIgnore
     public List<Category> listCategory;
 
 //    @JsonIgnore
@@ -38,6 +39,7 @@ public class Account {
     private List<LikeProduct> likeProductes;
 
     @OneToMany(mappedBy = "accountOrder")
+    @JsonIgnore
     private List<Order> orders;
 
 }
