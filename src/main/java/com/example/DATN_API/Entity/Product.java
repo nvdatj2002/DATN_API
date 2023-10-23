@@ -40,7 +40,7 @@ public class Product {
     private Date end_promotion;
     private String description;
 
-    private boolean status;
+    private int status;
 
     @OneToOne(mappedBy = "product")
     private DetailProduct detailProducts;

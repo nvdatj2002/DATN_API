@@ -32,9 +32,10 @@ public class ProductService {
 		return null;
 	}
 	
-	public void updateProduct(int id,Product product) {
+	public Product updateProduct(int id,Product product) {
 		product.setId(id);
-		productReponsitory.save(product);
+		Product productsave= productReponsitory.save(product);
+		return productsave;
 	}
 	
 	public void deleteProduct(int id) {

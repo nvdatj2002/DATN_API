@@ -56,24 +56,12 @@ public class FileUploadController {
         return new ResponseEntity<>(new ResponObject("SUCCESS", "Image has been added.", "name"),
                 HttpStatus.CREATED);
     }
-    @PutMapping("{id}")
-    public ResponseEntity<ResponObject> UpdateFile(@PathVariable("id") Integer id, @RequestParam("images") List<MultipartFile> file,
-                                                   @RequestParam("idProduct") int idProduct) {
-
-//        String name = iStorageSerivce.storeFile(file);
-//        ImageProduct ImageProduct = new ImageProduct();
-//        ImageProduct.setId_product(idProduct);
-//        ImageProduct.setUrl(name);
-//        imageProductService.updateImageProduct(id, ImageProduct);
-//        return new ResponseEntity<>(new ResponObject("SUCCESS", "Image has been updated.", name),
-//                HttpStatus.CREATED);
-        return null;
-    }
 
 
-    @DeleteMapping("/image/delete/{idImage}")
-    public void deleteImage(@PathVariable("idImage") int idImage) {
 
+    @DeleteMapping("/{id}")
+    public void deleteImage(@PathVariable("id") int idImage) {
+        imageProductService.deleteImageProduct(idImage);
 
     }
 }

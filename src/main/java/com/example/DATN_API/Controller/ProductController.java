@@ -53,14 +53,14 @@ public class ProductController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ResponObject> update(@PathVariable Integer id, @RequestBody Product product) {
+    public ResponseEntity<ResponObject> update(@PathVariable("id") Integer id, @RequestBody Product product) {
         if (!productService.existsById(id))
             return new ResponseEntity<>(
                     new ResponObject("NOT_FOUND", "Product_id: " + id + " does not exists.", product),
                     HttpStatus.NOT_FOUND);
 
-        productService.updateProduct(id, product);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "Product has been updated.", product), HttpStatus.OK);
+        Product productnew=productService.updateProduct(id, product);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "Product has been updated.", productnew), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
