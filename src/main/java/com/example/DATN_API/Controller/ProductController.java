@@ -29,6 +29,7 @@ public class ProductController {
     ProductService productService;
     @Autowired
     ShopService shopService;
+
     @GetMapping()
     public ResponseEntity<List<Product>> getAll() {
         return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
@@ -43,11 +44,11 @@ public class ProductController {
     }
 
     @PostMapping("/shop/{shop}")
-    public ResponseEntity<ResponObject> create(@PathVariable("shop") int shop,@RequestBody Product product) {
-        Shop shop2=shopService.findById(shop);
+    public ResponseEntity<ResponObject> create(@PathVariable("shop") int shop, @RequestBody Product product) {
+        Shop shop2 = shopService.findById(shop);
         product.setShop(shop2);
-        Product productnew= productService.createProduct(product);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "Product has been added.",productnew),
+        Product productnew = productService.createProduct(product);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "Product has been added.", productnew),
                 HttpStatus.CREATED);
 
     }
@@ -59,16 +60,18 @@ public class ProductController {
                     new ResponObject("NOT_FOUND", "Product_id: " + id + " does not exists.", product),
                     HttpStatus.NOT_FOUND);
 
-        Product productnew=productService.updateProduct(id, product);
+        Product productnew = productService.updateProduct(id, product);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "Product has been updated.", productnew), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<ResponObject> delete(@PathVariable Integer id) {
+    public ResponseEntity<ResponObject> delete(@PathVariable("id") Integer id) {
         if (!productService.existsById(id))
             return new ResponseEntity<>(new ResponObject("NOT_FOUND", "Product_id: " + id + " does not exists.", id),
                     HttpStatus.NOT_FOUND);
-        productService.deleteProduct(id);
+        Product product = productService.findById(id);
+        product.setStatus(2);
+        productService.updateProduct(id, product);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "Product has been deleted.", id), HttpStatus.OK);
     }
 

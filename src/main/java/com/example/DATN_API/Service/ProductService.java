@@ -34,8 +34,14 @@ public class ProductService {
 	
 	public Product updateProduct(int id,Product product) {
 		product.setId(id);
-		Product productsave= productReponsitory.save(product);
-		return productsave;
+		try {
+			Product productsave= productReponsitory.save(product);
+			return productsave;
+		}catch (Exception e){
+			e.printStackTrace();
+			LogError.saveToLog(e);
+		}
+		return null;
 	}
 	
 	public void deleteProduct(int id) {

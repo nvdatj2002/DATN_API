@@ -26,10 +26,12 @@ public class FileUploadController {
     ImageProductService imageProductService;
     @Autowired
     ProductService productService;
+
     @GetMapping()
     public ResponseEntity<List<ImageProduct>> getAll() {
         return new ResponseEntity<>(imageProductService.findAll(), HttpStatus.OK);
     }
+
     @GetMapping("/{fileName:.+}")
     public ResponseEntity<byte[]> readDetailFile(@PathVariable("fileName") String fileName) {
         try {
@@ -44,8 +46,8 @@ public class FileUploadController {
     public ResponseEntity<ResponObject> uploadFile(@RequestParam("images") List<MultipartFile> file,
                                                    @RequestParam("idProduct") int idProduct) {
 
-        Product product=productService.findById((idProduct));
-        for (MultipartFile item: file
+        Product product = productService.findById((idProduct));
+        for (MultipartFile item : file
         ) {
             String name = iStorageSerivce.storeFile(item);
             ImageProduct ImageProduct = new ImageProduct();
@@ -57,11 +59,8 @@ public class FileUploadController {
                 HttpStatus.CREATED);
     }
 
-
-
     @DeleteMapping("/{id}")
     public void deleteImage(@PathVariable("id") int idImage) {
         imageProductService.deleteImageProduct(idImage);
-
     }
 }
