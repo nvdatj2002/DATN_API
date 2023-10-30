@@ -39,11 +39,9 @@ public class Product {
     private Date start_promotion;
     private Date end_promotion;
     private String description;
-
+    private int quantity;
     private int status;
 
-    @OneToOne(mappedBy = "product")
-    private DetailProduct detailProducts;
 
     @ManyToOne
     @JoinColumn(name = "id_category_item")

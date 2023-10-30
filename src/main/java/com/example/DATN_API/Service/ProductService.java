@@ -16,6 +16,11 @@ public class ProductService {
 		return productReponsitory.findAll();
 	}
 
+	public List<Product> findProductbyStatus(int status) {
+		return productReponsitory.getProductbyStatus(status);
+	}
+
+
 	public Product findById(int id) {
 		Optional<Product> product = productReponsitory.findById(id);
 		return product.get();
