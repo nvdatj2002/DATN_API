@@ -20,7 +20,7 @@ public class Account {
     private int id;
     private String username;
     private String password;
-    private Date create_date;
+    private Date createdate;
     private boolean status;
 
 
@@ -32,8 +32,15 @@ public class Account {
 //    @OneToMany(mappedBy = "account")
 //    public List<CategoryItem> listCategoryItem;
 
-    @OneToOne(mappedBy = "account")
+    @OneToOne(mappedBy = "accountShop")
     private Shop shop;
+
+    @OneToOne(mappedBy = "Infaccount")
+    private InfoAccount infoAccount;
+
+    @OneToMany(mappedBy = "Addressaccount")
+    private List<AddressAccount> address_account;
+
 
     @OneToMany(mappedBy = "account_like")
     private List<LikeProduct> likeProductes;

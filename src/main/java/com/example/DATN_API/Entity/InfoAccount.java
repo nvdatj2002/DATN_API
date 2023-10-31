@@ -19,9 +19,8 @@ public class InfoAccount {
     private int id;
 
     @OneToOne
-    @JoinColumn(name = "username")
-    @JsonIgnore
-    private Account account;
+    @JoinColumn(name = "id_account")
+    private Account Infaccount;
 
     private String fullname;
 
@@ -29,10 +28,7 @@ public class InfoAccount {
 
     private String phone;
 
-    private boolean gender;
-
-    @OneToMany(mappedBy = "account")
-    private List<AddressAccount> address_account;
+    private int gender;
 
     private String email;
 

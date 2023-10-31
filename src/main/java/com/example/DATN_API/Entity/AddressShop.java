@@ -1,5 +1,6 @@
 package com.example.DATN_API.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class AddressShop {
     private int id;
 
     @OneToOne
+
     @JoinColumn(name = "id_shop")
     private Shop shopAddress;
 

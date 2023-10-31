@@ -38,7 +38,12 @@ public class ProductService {
 	}
 	
 	public Product updateProduct(int id,Product product) {
+		Product productold=findById(id);
 		product.setId(id);
+		product.setShop(productold.getShop());
+		product.setCreate_date(productold.getCreate_date());
+		product.setStart_promotion(productold.getStart_promotion());
+		product.setEnd_promotion(productold.getEnd_promotion());
 		try {
 			Product productsave= productReponsitory.save(product);
 			return productsave;

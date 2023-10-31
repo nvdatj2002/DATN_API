@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Product")
+@Table(name = "product")
 
 public class Product {
     @Id
@@ -21,7 +21,6 @@ public class Product {
     private int id;
 
     @ManyToOne
-
     @JoinColumn(name = "id_shop")
     @JsonIgnore
     private Shop shop;
@@ -39,7 +38,7 @@ public class Product {
     private Date start_promotion;
     private Date end_promotion;
     private String description;
-    private int quantity;
+
     private int status;
 
 
@@ -49,6 +48,10 @@ public class Product {
 
     @OneToOne(mappedBy = "product_like")
     private LikeProduct likeProduct;
+
+    @OneToOne(mappedBy = "id_Product")
+    private Storage storage;
+
 
     @OneToOne(mappedBy = "productOrder")
     private OrderDetail orderDetail;

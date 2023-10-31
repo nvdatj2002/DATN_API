@@ -31,6 +31,7 @@ public class Category {
     public List<CategoryItem> listCategory;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "id_account")
     private Account accountCreateCategory;
 }

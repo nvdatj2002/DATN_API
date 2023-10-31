@@ -1,6 +1,5 @@
 package com.example.DATN_API.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,22 +10,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "order_detail")
-public class OrderDetail {
-
+@Table(name = "storage")
+public class Storage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "id_order")
-//    @JsonBackReference
-//    private Order orders;
+
+    private int quantity;
 
     @OneToOne
     @JoinColumn(name = "id_product")
-    private Product productOrder;
-
-
-    private int quantity;
+    private Product id_Product;
 }

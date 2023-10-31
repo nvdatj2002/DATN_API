@@ -22,9 +22,8 @@ public class Shop {
     private String shop_name;
 
     @OneToOne()
-    @JsonIgnore
     @JoinColumn(name = "id_account")
-    private Account account;
+    private Account accountShop;
 
     private String image;
 
@@ -32,6 +31,5 @@ public class Shop {
     private AddressShop addressShop;
 
     @OneToMany(mappedBy = "shop")
-    @JsonIgnore
     private List<Product> products;
 }
