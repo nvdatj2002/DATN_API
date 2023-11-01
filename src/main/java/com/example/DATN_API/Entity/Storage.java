@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +21,9 @@ public class Storage {
     private int quantity;
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "id_product")
     private Product id_Product;
+
+    private Date create_date;
 }

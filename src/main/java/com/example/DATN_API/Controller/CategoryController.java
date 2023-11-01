@@ -1,113 +1,151 @@
 package com.example.DATN_API.Controller;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import com.example.DATN_API.Entity.Account;
 import com.example.DATN_API.Entity.Category;
 import com.example.DATN_API.Entity.CategoryItem;
 import com.example.DATN_API.Entity.ResponObject;
+import com.example.DATN_API.Service.IStorageSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.DATN_API.Service.CategoryService;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/category")
 @CrossOrigin("*")
 public class CategoryController {
-	@Autowired
-	CategoryService CategoryService;
+    @Autowired
+    CategoryService CategoryService;
+    @Autowired
+    IStorageSerivce iStorageSerivce;
 
-	@GetMapping()
-	public ResponseEntity<List<Category>> getAll() {
-		return new ResponseEntity<>(CategoryService.findAllCategory(), HttpStatus.OK);
-	}
+    @GetMapping()
+    public ResponseEntity<List<Category>> getAll() {
+        return new ResponseEntity<>(CategoryService.findAllCategory(), HttpStatus.OK);
+    }
 
-	@GetMapping("{id}")
-	public ResponseEntity<Category> findById(@PathVariable Integer id) {
-		if (CategoryService.existsByIdCategory(id)) {
-			return new ResponseEntity<>(CategoryService.findByIdCategory(id), HttpStatus.OK);
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	}
+    @GetMapping("{id}")
+    public ResponseEntity<Category> findById(@PathVariable Integer id) {
+        if (CategoryService.existsByIdCategory(id)) {
+            return new ResponseEntity<>(CategoryService.findByIdCategory(id), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
-	@PostMapping()
-	public ResponseEntity<ResponObject> create(@RequestBody Category Category) {
-		CategoryService.createCategory(Category);
-		return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been added.", Category),
-				HttpStatus.CREATED);
+    @PostMapping()
+    public ResponseEntity<ResponObject> create(@RequestParam("id_account") Integer idAccount, @RequestParam("image") MultipartFile image, @RequestParam("type_category") String type_category, @RequestParam("create_date") Date create_date) {
+        System.out.println("id" + idAccount);
+        System.out.println("image  " + image);
+        String name = iStorageSerivce.storeFile(image);
+        Account newAccount = CategoryService.findAccountById(idAccount);
+        Category category = new Category();
+        category.setImage(name);
+        category.setAccountCreateCategory(newAccount);
+        category.setStatus(true);
+        category.setType_category(type_category);
+        category.setCreate_date(create_date);
+        CategoryService.createCategory(category);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been added.", category),
+                HttpStatus.CREATED);
+    }
 
-	}
+    @PutMapping("{id}")
+    public ResponseEntity<ResponObject> update(@PathVariable("id") Integer id, @RequestParam("type_category") Optional<String> type_category, @RequestParam("image") Optional<MultipartFile> image) {
+        MultipartFile imagesave = image.orElse(null);
+        String type_categorysave = type_category.orElse("");
+        Category categoryold = CategoryService.findByIdCategory(id);
+        Category categorysave = new Category();
+        categorysave.setId(categoryold.getId());
+        categorysave.setType_category(categoryold.getType_category());
+        categorysave.setAccountCreateCategory(categoryold.getAccountCreateCategory());
+        categorysave.setStatus(categoryold.getStatus());
+        categorysave.setCreate_date(categoryold.getCreate_date());
+        if (imagesave == null && type_categorysave.equals("")) {
+            categorysave.setImage(categoryold.getImage());
+            categorysave.setType_category(categoryold.getType_category());
+            CategoryService.updateCategory(categorysave);
+        } else if (imagesave == null && !type_categorysave.equals("")) {
+            categorysave.setImage(categoryold.getImage());
+            categorysave.setType_category(type_categorysave);
+            CategoryService.updateCategory(categorysave);
+        } else if (imagesave != null && type_categorysave.equals("")) {
+            String name = iStorageSerivce.storeFile(imagesave);
+            categorysave.setImage(name);
+            categorysave.setType_category(categoryold.getType_category());
+            CategoryService.updateCategory(categorysave);
+        } else {
+            String name = iStorageSerivce.storeFile(imagesave);
+            categorysave.setImage(name);
+            categorysave.setType_category(type_categorysave);
+            CategoryService.updateCategory(categorysave);
+        }
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been updated.", categorysave), HttpStatus.OK);
+    }
 
-	@PutMapping("{id}")
-	public ResponseEntity<ResponObject> update(@PathVariable Integer id, @RequestBody Category Category) {
-		if (!CategoryService.existsByIdCategory(id))
-			return new ResponseEntity<>(
-					new ResponObject("NOT_FOUND", "Category_id: " + id + " does not exists.", Category),
-					HttpStatus.NOT_FOUND);
+    @DeleteMapping("{id}")
+    public ResponseEntity<ResponObject> delete(@PathVariable Integer id) {
+        if (!CategoryService.existsByIdCategory(id))
+            return new ResponseEntity<>(new ResponObject("NOT_FOUND", "Category_id: " + id + " does not exists.", id),
+                    HttpStatus.NOT_FOUND);
+        CategoryService.deleteCategory(id);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been deleted.", id), HttpStatus.OK);
+    }
 
-		CategoryService.updateCategory(id, Category);
-		return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been updated.", Category), HttpStatus.OK);
-	}
 
-	@DeleteMapping("{id}")
-	public ResponseEntity<ResponObject> delete(@PathVariable Integer id) {
-		if (!CategoryService.existsByIdCategory(id))
-			return new ResponseEntity<>(new ResponObject("NOT_FOUND", "Category_id: " + id + " does not exists.", id),
-					HttpStatus.NOT_FOUND);
-		CategoryService.deleteCategory(id);
-		return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been deleted.", id), HttpStatus.OK);
-	}
-	
-	
-	//CategoryItem
-	@GetMapping("/categoryItem")
-	public ResponseEntity<List<CategoryItem>> getAllCategoryItem() {
-		return new ResponseEntity<>(CategoryService.findAllCategoryItem(), HttpStatus.OK);
-	}
+    //CategoryItem
+    @GetMapping("/categoryItem")
+    public ResponseEntity<List<CategoryItem>> getAllCategoryItem() {
+        return new ResponseEntity<>(CategoryService.findAllCategoryItem(), HttpStatus.OK);
+    }
 
-	@GetMapping("/categoryItem/{id}")
-	public ResponseEntity<CategoryItem> findByIdCategoryItem(@PathVariable Integer id) {
-		if (CategoryService.existsByIdCategoryItem(id)) {
-			return new ResponseEntity<>(CategoryService.findByIdCategoryItem(id), HttpStatus.OK);
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	}
+    @GetMapping("/categoryItem/{id}")
+    public ResponseEntity<CategoryItem> findByIdCategoryItem(@PathVariable Integer id) {
+        if (CategoryService.existsByIdCategoryItem(id)) {
+            return new ResponseEntity<>(CategoryService.findByIdCategoryItem(id), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
-	@PostMapping("/categoryItem")
-	public ResponseEntity<ResponObject> createCategoryItem(@RequestBody CategoryItem categoryItem) {
-		CategoryService.createCategoryItem(categoryItem);
-		return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", categoryItem),
-				HttpStatus.CREATED);
-	}
+    @PostMapping("/categoryItem")
+    public ResponseEntity<ResponObject> createCategoryItem(@RequestParam("type_categoryItem") String typeCategoryItem, @RequestParam("category") Integer idCategory, @RequestParam("create_date") Date create_date, @RequestParam("idAccount") Integer idAccount) {
+        Category categorysave = CategoryService.findByIdCategory(idCategory);
+        Account accountsave = CategoryService.findAccountById(idAccount);
+        CategoryItem newcategoryItem = new CategoryItem();
+        newcategoryItem.setType_category_item(typeCategoryItem);
+        newcategoryItem.setCategory(categorysave);
+        newcategoryItem.setAccount(accountsave);
+        newcategoryItem.setCreate_date(create_date);
+        newcategoryItem.setStatus(true);
+        CategoryService.createCategoryItem(newcategoryItem);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", newcategoryItem),
+                HttpStatus.CREATED);
+    }
 
-	@PutMapping("/categoryItem/{id}")
-	public ResponseEntity<ResponObject> updateCategoryItem(@PathVariable Integer id, @RequestBody CategoryItem Category) {
-		if (!CategoryService.existsByIdCategoryItem(id))
-			return new ResponseEntity<>(
-					new ResponObject("NOT_FOUND", "CategoryItem_id: " + id + " does not exists.", Category),
-					HttpStatus.NOT_FOUND);
+    @PutMapping("/categoryItem/{id}")
+    public ResponseEntity<ResponObject> updateCategoryItem(@PathVariable Integer id, @RequestBody CategoryItem Category) {
+        if (!CategoryService.existsByIdCategoryItem(id))
+            return new ResponseEntity<>(
+                    new ResponObject("NOT_FOUND", "CategoryItem_id: " + id + " does not exists.", Category),
+                    HttpStatus.NOT_FOUND);
 
-		CategoryService.updateCategoryItem(id, Category);
-		return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been updated.", Category), HttpStatus.OK);
-	}
+        CategoryService.updateCategoryItem(id, Category);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been updated.", Category), HttpStatus.OK);
+    }
 
-	@DeleteMapping("/categoryItem/{id}")
-	public ResponseEntity<ResponObject> deleteCategoryItem(@PathVariable Integer id) {
-		if (!CategoryService.existsByIdCategoryItem(id))
-			return new ResponseEntity<>(new ResponObject("NOT_FOUND", "CategoryItem_id: " + id + " does not exists.", id),
-					HttpStatus.NOT_FOUND);
-		CategoryService.deleteCategoryItem(id);
-		return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been deleted.", id), HttpStatus.OK);
-	}
+    @DeleteMapping("/categoryItem/{id}")
+    public ResponseEntity<ResponObject> deleteCategoryItem(@PathVariable Integer id) {
+        if (!CategoryService.existsByIdCategoryItem(id))
+            return new ResponseEntity<>(new ResponObject("NOT_FOUND", "CategoryItem_id: " + id + " does not exists.", id),
+                    HttpStatus.NOT_FOUND);
+        CategoryService.deleteCategoryItem(id);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been deleted.", id), HttpStatus.OK);
+    }
 
 }

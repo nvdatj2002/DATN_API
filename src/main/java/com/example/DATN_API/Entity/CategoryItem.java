@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@ToString
 @Table(name = "category_item")
 
 public class CategoryItem {
@@ -30,15 +29,16 @@ public class CategoryItem {
 
     private String type_category_item;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "create_date")
-    Date create_date = new Date();
+    private Date create_date;
 
-//    @ManyToOne
-//    @JoinColumn(name = "id_account")
-//    private Account account;
+    private Boolean status;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "id_account")
+    private Account account;
 
     @OneToMany(mappedBy = "categoryItem_product")
-            @JsonIgnore
+    @JsonIgnore
     List<Product> products;
 }

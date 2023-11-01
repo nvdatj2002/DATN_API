@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -16,17 +17,14 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "category")
-
 public class Category {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String type_category;
-
-    @Temporal(TemporalType.DATE)
-    @Column(name = "create_date")
-    Date create_date = new Date();
-
-
+    private Date create_date;
+    private String image;
+    private Boolean status;
     @OneToMany(mappedBy = "category")
     public List<CategoryItem> listCategory;
 

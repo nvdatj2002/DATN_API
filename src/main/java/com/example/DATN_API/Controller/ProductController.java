@@ -6,7 +6,9 @@ import java.util.Optional;
 import com.example.DATN_API.Entity.Product;
 import com.example.DATN_API.Entity.ResponObject;
 import com.example.DATN_API.Entity.Shop;
+import com.example.DATN_API.Entity.Storage;
 import com.example.DATN_API.Service.ShopService;
+import com.example.DATN_API.Service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,8 @@ public class ProductController {
     ProductService productService;
     @Autowired
     ShopService shopService;
-
+    @Autowired
+    StorageService storageService;
     @GetMapping()
     public ResponseEntity<List<Product>> getAll(@RequestParam("status")Optional<String> getstatus) {
         String status=getstatus.orElse("");
@@ -72,6 +75,26 @@ public class ProductController {
         product.setStatus(2);
         productService.updateProduct(id, product);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "Product has been deleted.", id), HttpStatus.OK);
+    }
+
+
+    //Storage
+    @PostMapping("/createStorage/{product}")
+    public ResponseEntity<ResponObject> createStorage(@PathVariable("product") Integer product,@RequestBody Storage storage) {
+        Product newProduct=productService.findById(product);
+        storage.setId_Product(newProduct);
+        Storage storagesave = storageService.createStorage(storage);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "Storage has been added.", storagesave),
+                HttpStatus.CREATED);
+    }
+
+    @PutMapping("/updateStorage/{id}/{idProduct}")
+    public ResponseEntity<ResponObject> updateStorage(@PathVariable("id") Integer id,@PathVariable("idProduct") Integer idProduct,@RequestBody Storage storage) {
+        Product newProduct=productService.findById(idProduct);
+        storage.setId_Product(newProduct);
+        Storage storagesave = storageService.updateStorage(id,storage);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "Storage has been added.", storagesave),
+                HttpStatus.CREATED);
     }
 
 }

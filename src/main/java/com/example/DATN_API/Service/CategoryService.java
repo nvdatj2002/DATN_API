@@ -3,8 +3,10 @@ package com.example.DATN_API.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.DATN_API.Entity.Account;
 import com.example.DATN_API.Entity.Category;
 import com.example.DATN_API.Entity.CategoryItem;
+import com.example.DATN_API.Reponsitories.AccountReponsitory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,23 +19,23 @@ public class CategoryService {
 	CategoryReponsitory CategoryReponsitory;
 	@Autowired
 	CategoryItemReponsitory CategoryItemReponsitory;
-
+	@Autowired
+	AccountReponsitory accountReponsitory;
 	public List<Category> findAllCategory() {
 		return CategoryReponsitory.findAll();
 	}
 
 	public Category findByIdCategory(int id) {
-		Optional<Category> Category = CategoryReponsitory.findById(id);
-		return Category.get();
+		Optional<Category> category = CategoryReponsitory.findById(id);
+		return category.get();
 	}
 
 	public void createCategory(Category Category) {
 		CategoryReponsitory.save(Category);
 	}
 
-	public void updateCategory(int id, Category Category) {
-		Category.setId(id);
-		CategoryReponsitory.save(Category);
+	public Category updateCategory(Category Category) {
+		return CategoryReponsitory.save(Category);
 	}
 
 	public void deleteCategory(int id) {
@@ -70,5 +72,10 @@ public class CategoryService {
 
 	public Boolean existsByIdCategoryItem(Integer id) {
 		return CategoryItemReponsitory.existsById(id) ? true : false;
+	}
+
+	public Account findAccountById(int id){
+		Optional<Account> newaccount=accountReponsitory.findById(id);
+		return newaccount.get();
 	}
 }
