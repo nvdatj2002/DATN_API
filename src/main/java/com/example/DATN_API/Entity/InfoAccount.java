@@ -19,7 +19,7 @@ public class InfoAccount {
     private int id;
 
     @OneToOne
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "id_account")
     @JsonIgnore
     private Account account;
 

@@ -21,8 +21,7 @@ public class Account {
     private String username;
     private String password;
     private Date create_date;
-    private boolean status;
-
+    public boolean status;
 
     @OneToMany(mappedBy = "accountCreateCategory")
     @JsonIgnore
