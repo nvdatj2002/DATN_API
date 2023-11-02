@@ -15,67 +15,67 @@ import com.example.DATN_API.Reponsitories.CategoryReponsitory;
 
 @Service
 public class CategoryService {
-	@Autowired
-	CategoryReponsitory CategoryReponsitory;
-	@Autowired
-	CategoryItemReponsitory CategoryItemReponsitory;
-	@Autowired
-	AccountReponsitory accountReponsitory;
-	public List<Category> findAllCategory() {
-		return CategoryReponsitory.findAll();
-	}
+    @Autowired
+    CategoryReponsitory CategoryReponsitory;
+    @Autowired
+    CategoryItemReponsitory CategoryItemReponsitory;
+    @Autowired
+    AccountReponsitory accountReponsitory;
 
-	public Category findByIdCategory(int id) {
-		Optional<Category> category = CategoryReponsitory.findById(id);
-		return category.get();
-	}
+    public List<Category> findAllCategory() {
+        return CategoryReponsitory.findAll();
+    }
 
-	public void createCategory(Category Category) {
-		CategoryReponsitory.save(Category);
-	}
+    public Category findByIdCategory(int id) {
+        Optional<Category> category = CategoryReponsitory.findById(id);
+        return category.get();
+    }
 
-	public Category updateCategory(Category Category) {
-		return CategoryReponsitory.save(Category);
-	}
+    public Category createCategory(Category Category) {
+        return CategoryReponsitory.save(Category);
+    }
 
-	public void deleteCategory(int id) {
-		CategoryReponsitory.deleteById(id);
-	}
+    public Category updateCategory(Category Category) {
+        return CategoryReponsitory.save(Category);
+    }
 
-	public Boolean existsByIdCategory(Integer id) {
+    public void deleteCategory(int id) {
+        CategoryReponsitory.deleteById(id);
+    }
 
-		return CategoryReponsitory.existsById(id) ? true : false;
-	}
+    public Boolean existsByIdCategory(Integer id) {
 
-	// CategoryItem
-	public List<CategoryItem> findAllCategoryItem() {
-		return CategoryItemReponsitory.findAll();
-	}
+        return CategoryReponsitory.existsById(id) ? true : false;
+    }
 
-	public CategoryItem findByIdCategoryItem(int id) {
-		Optional<CategoryItem> Category = CategoryItemReponsitory.findById(id);
-		return Category.get();
-	}
+    // CategoryItem
+    public List<CategoryItem> findAllCategoryItem() {
+        return CategoryItemReponsitory.findAll();
+    }
 
-	public void createCategoryItem(CategoryItem Category) {
-		CategoryItemReponsitory.save(Category);
-	}
+    public CategoryItem findByIdCategoryItem(int id) {
+        Optional<CategoryItem> Category = CategoryItemReponsitory.findById(id);
+        return Category.get();
+    }
 
-	public void updateCategoryItem(int id, CategoryItem CategoryItem) {
-		CategoryItem.setId(id);
-		CategoryItemReponsitory.save(CategoryItem);
-	}
+    public CategoryItem createCategoryItem(CategoryItem Category) {
+        return CategoryItemReponsitory.save(Category);
+    }
 
-	public void deleteCategoryItem(int id) {
-		CategoryItemReponsitory.deleteById(id);
-	}
+    public CategoryItem updateCategoryItem(CategoryItem CategoryItem) {
+        return CategoryItemReponsitory.save(CategoryItem);
+    }
 
-	public Boolean existsByIdCategoryItem(Integer id) {
-		return CategoryItemReponsitory.existsById(id) ? true : false;
-	}
+    public void deleteCategoryItem(int id) {
+        CategoryItemReponsitory.deleteById(id);
+    }
 
-	public Account findAccountById(int id){
-		Optional<Account> newaccount=accountReponsitory.findById(id);
-		return newaccount.get();
-	}
+    public Boolean existsByIdCategoryItem(Integer id) {
+        return CategoryItemReponsitory.existsById(id) ? true : false;
+    }
+
+    public Account findAccountById(int id) {
+        Optional<Account> newaccount = accountReponsitory.findById(id);
+        return newaccount.get();
+    }
 }

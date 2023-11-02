@@ -41,8 +41,6 @@ public class CategoryController {
 
     @PostMapping()
     public ResponseEntity<ResponObject> create(@RequestParam("id_account") Integer idAccount, @RequestParam("image") MultipartFile image, @RequestParam("type_category") String type_category, @RequestParam("create_date") Date create_date) {
-        System.out.println("id" + idAccount);
-        System.out.println("image  " + image);
         String name = iStorageSerivce.storeFile(image);
         Account newAccount = CategoryService.findAccountById(idAccount);
         Category category = new Category();
@@ -51,8 +49,8 @@ public class CategoryController {
         category.setStatus(true);
         category.setType_category(type_category);
         category.setCreate_date(create_date);
-        CategoryService.createCategory(category);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been added.", category),
+        Category newcate = CategoryService.createCategory(category);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been added.", newcate),
                 HttpStatus.CREATED);
     }
 
@@ -129,14 +127,24 @@ public class CategoryController {
     }
 
     @PutMapping("/categoryItem/{id}")
-    public ResponseEntity<ResponObject> updateCategoryItem(@PathVariable Integer id, @RequestBody CategoryItem Category) {
-        if (!CategoryService.existsByIdCategoryItem(id))
-            return new ResponseEntity<>(
-                    new ResponObject("NOT_FOUND", "CategoryItem_id: " + id + " does not exists.", Category),
-                    HttpStatus.NOT_FOUND);
-
-        CategoryService.updateCategoryItem(id, Category);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been updated.", Category), HttpStatus.OK);
+    public ResponseEntity<ResponObject> updateCategoryItem(@PathVariable("id") Integer id, @RequestParam("type_categoryItem") Optional<String> typeCategoryItem, @RequestParam("category") Optional<Integer> idCategory, @RequestParam("idAccount") Integer idAccount) {
+        String typeCategoryItemsave = typeCategoryItem.orElse("");
+        int idCategorysave = idCategory.orElse(0);
+        Category categorysave = CategoryService.findByIdCategory(idCategorysave);
+        Account accountsave = CategoryService.findAccountById(idAccount);
+        CategoryItem categoryItemold = CategoryService.findByIdCategoryItem(id);
+        categoryItemold.setAccount(accountsave);
+        if (typeCategoryItemsave.equals("") && idCategorysave != 0) {
+            categoryItemold.setCategory(categorysave);
+        } else if (!typeCategoryItemsave.equals("") && idCategorysave == 0) {
+            categoryItemold.setType_category_item(typeCategoryItemsave);
+        } else if (!typeCategoryItemsave.equals("") && idCategorysave != 0) {
+            categoryItemold.setType_category_item(typeCategoryItemsave);
+            categoryItemold.setCategory(categorysave);
+        }
+        CategoryItem newcategoryItem = CategoryService.updateCategoryItem(categoryItemold);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", newcategoryItem),
+                HttpStatus.CREATED);
     }
 
     @DeleteMapping("/categoryItem/{id}")
