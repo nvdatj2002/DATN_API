@@ -96,5 +96,18 @@ public class ProductController {
         return new ResponseEntity<>(new ResponObject("SUCCESS", "Storage has been added.", storagesave),
                 HttpStatus.CREATED);
     }
-
+    @PutMapping("/verify/{id}")
+    public ResponseEntity<ResponObject> verifyProduct(@PathVariable("id") Integer id) {
+        Product product = productService.findById(id);
+        product.setStatus(1);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "verify product succsess", product),
+                HttpStatus.CREATED);
+    }
+    @PutMapping("/ban/{id}")
+    public ResponseEntity<ResponObject> banProduct(@PathVariable("id") Integer id) {
+        Product product = productService.findById(id);
+        product.setStatus(2);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "ban product succsess", product),
+                HttpStatus.CREATED);
+    }
 }
