@@ -89,11 +89,10 @@ public class CategoryController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<ResponObject> delete(@PathVariable Integer id) {
-        if (!CategoryService.existsByIdCategory(id))
-            return new ResponseEntity<>(new ResponObject("NOT_FOUND", "Category_id: " + id + " does not exists.", id),
-                    HttpStatus.NOT_FOUND);
-        CategoryService.deleteCategory(id);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been deleted.", id), HttpStatus.OK);
+        if (CategoryService.deleteCategory(id)) {
+            return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been deleted.", id), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponObject("ERROR", "Category error deleted.", id), HttpStatus.OK);
     }
 
 
@@ -121,8 +120,8 @@ public class CategoryController {
         newcategoryItem.setAccount(accountsave);
         newcategoryItem.setCreate_date(create_date);
         newcategoryItem.setStatus(true);
-        CategoryService.createCategoryItem(newcategoryItem);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", newcategoryItem),
+        CategoryItem ncate= CategoryService.createCategoryItem(newcategoryItem);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", ncate),
                 HttpStatus.CREATED);
     }
 
@@ -148,12 +147,12 @@ public class CategoryController {
     }
 
     @DeleteMapping("/categoryItem/{id}")
-    public ResponseEntity<ResponObject> deleteCategoryItem(@PathVariable Integer id) {
-        if (!CategoryService.existsByIdCategoryItem(id))
-            return new ResponseEntity<>(new ResponObject("NOT_FOUND", "CategoryItem_id: " + id + " does not exists.", id),
-                    HttpStatus.NOT_FOUND);
-        CategoryService.deleteCategoryItem(id);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been deleted.", id), HttpStatus.OK);
+    public ResponseEntity<ResponObject> deleteCategoryItem(@PathVariable("id") Integer id) {
+        if (CategoryService.deleteCategoryItem(id)) {
+            return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been deleted.", id), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponObject("ERROR", "CategoryItem error deleted.", id), HttpStatus.OK);
+
     }
 
 }
