@@ -8,11 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AccountReponsitory extends JpaRepository<Account, String> {
+public interface AccountReponsitory extends JpaRepository<Account, Integer> {
 	@Query(value = "SELECT * FROM account where username=?1", nativeQuery = true)
 	Account findByUsername(String username);
-	
-	@Query(value = "update info_account set password=?1 where id=?2", nativeQuery = true)
-	Account changePassword(String password, int id);
 }
 

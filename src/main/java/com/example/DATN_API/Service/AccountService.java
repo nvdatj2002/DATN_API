@@ -31,15 +31,8 @@ public class AccountService {
 		}
 		return null;
 	}
-
-	public Account changePassword(String password, int id) {
-		try {
-			Account changePassword = accountReponsitory.changePassword(password, id);
-			return changePassword;
-		} catch (Exception e) {
-			e.printStackTrace();
-			LogError.saveToLog(e);
-		}
-		return null;
+	
+	public Account findById(int id) {
+		return accountReponsitory.findById(id).get();
 	}
 }

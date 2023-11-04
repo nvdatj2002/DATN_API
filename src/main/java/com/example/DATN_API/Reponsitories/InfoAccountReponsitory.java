@@ -10,4 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface InfoAccountReponsitory extends JpaRepository<InfoAccount, String> {
 	@Query(value = "SELECT * FROM info_account where email=?1", nativeQuery = true)
 	InfoAccount findByEmail(String email);
+	
+	@Query(value = "SELECT * FROM info_account where id_account=?1", nativeQuery = true)
+	InfoAccount findById_account(int id);
 }

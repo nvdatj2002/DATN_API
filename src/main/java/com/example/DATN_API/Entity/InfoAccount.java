@@ -22,7 +22,7 @@ public class InfoAccount {
     @JoinColumn(name = "id_account")
     @JsonIgnore
     private Account account;
-
+    
     private String fullname;
 
     private String id_card;
