@@ -25,7 +25,7 @@ public class CategoryItem {
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "id_category")
-    private Category category;
+    private Category categoryNew;
 
     private String type_category_item;
 

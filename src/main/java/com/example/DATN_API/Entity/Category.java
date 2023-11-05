@@ -25,7 +25,8 @@ public class Category {
     private Date create_date;
     private String image;
     private Boolean status;
-    @OneToMany(mappedBy = "category")
+
+    @OneToMany(mappedBy = "categoryNew")
     public List<CategoryItem> listCategory;
 
     @ManyToOne

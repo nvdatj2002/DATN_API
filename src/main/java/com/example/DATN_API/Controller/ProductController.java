@@ -26,12 +26,13 @@ public class ProductController {
     ShopService shopService;
     @Autowired
     StorageService storageService;
+
     @GetMapping()
-    public ResponseEntity<List<Product>> getAll(@RequestParam("status")Optional<String> getstatus) {
-        String status=getstatus.orElse("");
-        if(status.equals("isactive")){
+    public ResponseEntity<List<Product>> getAll(@RequestParam("status") Optional<String> getstatus) {
+        String status = getstatus.orElse("");
+        if (status.equals("isactive")) {
             return new ResponseEntity<>(productService.findProductbyStatus(1), HttpStatus.OK);
-        }else if(status.equals("unactive")){
+        } else if (status.equals("unactive")) {
             return new ResponseEntity<>(productService.findProductbyStatus(2), HttpStatus.OK);
         }
         return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
@@ -80,8 +81,8 @@ public class ProductController {
 
     //Storage
     @PostMapping("/createStorage/{product}")
-    public ResponseEntity<ResponObject> createStorage(@PathVariable("product") Integer product,@RequestBody Storage storage) {
-        Product newProduct=productService.findById(product);
+    public ResponseEntity<ResponObject> createStorage(@PathVariable("product") Integer product, @RequestBody Storage storage) {
+        Product newProduct = productService.findById(product);
         storage.setId_Product(newProduct);
         Storage storagesave = storageService.createStorage(storage);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "Storage has been added.", storagesave),
@@ -89,12 +90,73 @@ public class ProductController {
     }
 
     @PutMapping("/updateStorage/{id}/{idProduct}")
-    public ResponseEntity<ResponObject> updateStorage(@PathVariable("id") Integer id,@PathVariable("idProduct") Integer idProduct,@RequestBody Storage storage) {
-        Product newProduct=productService.findById(idProduct);
+    public ResponseEntity<ResponObject> updateStorage(@PathVariable("id") Integer id, @PathVariable("idProduct") Integer idProduct, @RequestBody Storage storage) {
+        Product newProduct = productService.findById(idProduct);
         storage.setId_Product(newProduct);
-        Storage storagesave = storageService.updateStorage(id,storage);
+        Storage storagesave = storageService.updateStorage(id, storage);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "Storage has been added.", storagesave),
                 HttpStatus.CREATED);
     }
+
+//    @GetMapping("/find")
+//    public ResponseEntity<ResponObject> find(@RequestParam String key, @RequestParam String valueKeyword,
+//                                             @RequestParam String idCategoryItem, @RequestParam String minQuantity, @RequestParam String maxQuantity,
+//                                             @RequestParam String status) {
+//
+//        List<Product> products = productService.findAll();
+//        int max = Integer.parseInt(maxQuantity);
+//        int min = Integer.parseInt(minQuantity);
+//
+//        if (min >= 0 && max >= 0 && max >= min) {
+//            try {
+//                if (key.equals("id")) {
+//                    if (idCategoryItem.equals("") || idCategoryItem == null) {
+//                        if ((minQuantity.equals("") || minQuantity.equals("0"))
+//                                && (maxQuantity.equals("") || maxQuantity.equals("0"))) {
+//                            products = productService.findByKey(Integer.parseInt(valueKeyword), 0, 99999, "", status);
+//                        } else {
+//                            products = productService.findByKey(Integer.parseInt(valueKeyword), Integer.parseInt(minQuantity),
+//                                    Integer.parseInt(maxQuantity), "", status);
+//                        }
+//                    } else {
+//                        if ((minQuantity.equals("") || minQuantity.equals("0"))
+//                                && (maxQuantity.equals("") || maxQuantity.equals("0"))) {
+//                            products = productService.findByKey(Integer.parseInt(valueKeyword), 0, 99999, idCategoryItem, status);
+//                        } else {
+//                            products = productService.findByKey(Integer.parseInt(valueKeyword), Integer.parseInt(minQuantity),
+//                                    Integer.parseInt(maxQuantity), idCategoryItem, status);
+//                        }
+//                    }
+//                } else {
+//                    if (idCategoryItem.equals("") || idCategoryItem == null) {
+//                        if ((minQuantity.equals("") || minQuantity.equals("0"))
+//                                && (maxQuantity.equals("") || maxQuantity.equals("0"))) {
+//                            products = productService.findByProductName(valueKeyword, 0, 99999, "", status);
+//                        } else {
+//                            products = productService.findByProductName(valueKeyword, Integer.parseInt(minQuantity),
+//                                    Integer.parseInt(maxQuantity), "", status);
+//                        }
+//                    } else {
+//                        if ((minQuantity.equals("") || minQuantity.equals("0"))
+//                                && (maxQuantity.equals("") || maxQuantity.equals("0"))) {
+//                            products = productService.findByProductName(valueKeyword, 0, 99999, idCategoryItem, status);
+//                        } else {
+//                            products = productService.findByProductName(valueKeyword, Integer.parseInt(minQuantity),
+//                                    Integer.parseInt(maxQuantity), idCategoryItem, status);
+//                        }
+//                    }
+//                }
+//                return new ResponseEntity<>(new ResponObject("success", "Load sản phẩm thành công!", products),
+//                        HttpStatus.OK);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                return new ResponseEntity<>(new ResponObject("error", "Load sản phẩm thất bại!", products),
+//                        HttpStatus.OK);
+//            }
+//        } else {
+//            return new ResponseEntity<>(new ResponObject("error", "Số lượng tìm kiếm không hợp lệ!", products),
+//                    HttpStatus.OK);
+//        }
+//    }
 
 }

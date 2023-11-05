@@ -61,4 +61,14 @@ public class ProductService {
 	public Boolean existsById(Integer id) {
 		return productReponsitory.existsById(id) ? true : false;
 	}
+
+//	public List<Product> findByKey(int keyword, int minQuantity, int maxQuantity, String idCategoryItem,
+//								   String status) {
+//		return productReponsitory.findByKey(keyword, minQuantity, maxQuantity, idCategoryItem, status);
+//	}
+//
+//	public List<Product> findByProductName(String keyword, int minQuantity, int maxQuantity, String idCategoryItem,
+//										   String status) {
+//		return productReponsitory.findByProductName(keyword, minQuantity, maxQuantity, idCategoryItem, status);
+//	}
 }

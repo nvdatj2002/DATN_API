@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/category")
-@CrossOrigin("*")
+@CrossOrigin()
 public class CategoryController {
     @Autowired
     CategoryService CategoryService;
@@ -28,7 +28,14 @@ public class CategoryController {
 
     @GetMapping()
     public ResponseEntity<List<Category>> getAll() {
-        return new ResponseEntity<>(CategoryService.findAllCategory(), HttpStatus.OK);
+        List<Category> listCategory = CategoryService.findAll();
+        for(Category category : listCategory){
+            for(CategoryItem item : category.getListCategory())    {
+                System.out.println("CHECK: "+item.getType_category_item());
+            }
+        }
+
+        return new ResponseEntity<>(CategoryService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
@@ -114,14 +121,17 @@ public class CategoryController {
     public ResponseEntity<ResponObject> createCategoryItem(@RequestParam("type_categoryItem") String typeCategoryItem, @RequestParam("category") Integer idCategory, @RequestParam("create_date") Date create_date, @RequestParam("idAccount") Integer idAccount) {
         Category categorysave = CategoryService.findByIdCategory(idCategory);
         Account accountsave = CategoryService.findAccountById(idAccount);
+        if(typeCategoryItem.equals("")){
+            System.out.print("CHECK: "+typeCategoryItem);}
+
         CategoryItem newcategoryItem = new CategoryItem();
         newcategoryItem.setType_category_item(typeCategoryItem);
-        newcategoryItem.setCategory(categorysave);
+        newcategoryItem.setCategoryNew(categorysave);
         newcategoryItem.setAccount(accountsave);
         newcategoryItem.setCreate_date(create_date);
         newcategoryItem.setStatus(true);
-        CategoryItem ncate= CategoryService.createCategoryItem(newcategoryItem);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", ncate),
+        CategoryItem newItem  = CategoryService.createCategoryItem(newcategoryItem);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", newItem),
                 HttpStatus.CREATED);
     }
 
@@ -134,12 +144,12 @@ public class CategoryController {
         CategoryItem categoryItemold = CategoryService.findByIdCategoryItem(id);
         categoryItemold.setAccount(accountsave);
         if (typeCategoryItemsave.equals("") && idCategorysave != 0) {
-            categoryItemold.setCategory(categorysave);
+            categoryItemold.setCategoryNew(categorysave);
         } else if (!typeCategoryItemsave.equals("") && idCategorysave == 0) {
             categoryItemold.setType_category_item(typeCategoryItemsave);
         } else if (!typeCategoryItemsave.equals("") && idCategorysave != 0) {
             categoryItemold.setType_category_item(typeCategoryItemsave);
-            categoryItemold.setCategory(categorysave);
+            categoryItemold.setCategoryNew(categorysave);
         }
         CategoryItem newcategoryItem = CategoryService.updateCategoryItem(categoryItemold);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", newcategoryItem),

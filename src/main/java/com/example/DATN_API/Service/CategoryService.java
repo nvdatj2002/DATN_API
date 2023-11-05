@@ -22,7 +22,7 @@ public class CategoryService {
     @Autowired
     AccountReponsitory accountReponsitory;
 
-    public List<Category> findAllCategory() {
+    public List<Category> findAll() {
         return CategoryReponsitory.findAll();
     }
 
