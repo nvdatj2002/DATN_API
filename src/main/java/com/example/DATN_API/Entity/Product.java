@@ -51,5 +51,8 @@ public class Product {
 
     @OneToOne(mappedBy = "productOrder")
     private OrderDetail orderDetail;
+    
+    @OneToMany(mappedBy = "product")
+    public List<Storage> listStorage;
 
 }

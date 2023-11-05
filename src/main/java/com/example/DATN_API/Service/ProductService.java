@@ -1,4 +1,5 @@
 package com.example.DATN_API.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.DATN_API.Reponsitories.ProductReponsitory;
+
 @Service
 public class ProductService {
 	@Autowired
@@ -20,40 +22,39 @@ public class ProductService {
 		return productReponsitory.getProductbyStatus(status);
 	}
 
-
 	public Product findById(int id) {
 		Optional<Product> product = productReponsitory.findById(id);
 		return product.get();
 	}
-	
+
 	public Product createProduct(Product product) {
 		try {
-			Product productsave= productReponsitory.save(product);
+			Product productsave = productReponsitory.save(product);
 			return productsave;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			LogError.saveToLog(e);
 		}
 		return null;
 	}
-	
-	public Product updateProduct(int id,Product product) {
-		Product productold=findById(id);
+
+	public Product updateProduct(int id, Product product) {
+		Product productold = findById(id);
 		product.setId(id);
 		product.setShop(productold.getShop());
 		product.setCreate_date(productold.getCreate_date());
 		product.setStart_promotion(productold.getStart_promotion());
 		product.setEnd_promotion(productold.getEnd_promotion());
 		try {
-			Product productsave= productReponsitory.save(product);
+			Product productsave = productReponsitory.save(product);
 			return productsave;
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			LogError.saveToLog(e);
 		}
 		return null;
 	}
-	
+
 	public void deleteProduct(int id) {
 		productReponsitory.deleteById(id);
 	}
@@ -62,13 +63,11 @@ public class ProductService {
 		return productReponsitory.existsById(id) ? true : false;
 	}
 
-//	public List<Product> findByKey(int keyword, int minQuantity, int maxQuantity, String idCategoryItem,
-//								   String status) {
-//		return productReponsitory.findByKey(keyword, minQuantity, maxQuantity, idCategoryItem, status);
-//	}
-//
-//	public List<Product> findByProductName(String keyword, int minQuantity, int maxQuantity, String idCategoryItem,
-//										   String status) {
-//		return productReponsitory.findByProductName(keyword, minQuantity, maxQuantity, idCategoryItem, status);
-//	}
+	public List<Product> findByKey(int keyword, String idCategoryItem, String status) {
+		return productReponsitory.findByKey(keyword, idCategoryItem, status);
+	}
+
+	public List<Product> findByProductName(String keyword, String idCategoryItem, String status) {
+		return productReponsitory.findByProductName(keyword, idCategoryItem, status);
+	}
 }

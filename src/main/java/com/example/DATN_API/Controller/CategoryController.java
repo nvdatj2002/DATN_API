@@ -29,12 +29,6 @@ public class CategoryController {
     @GetMapping()
     public ResponseEntity<List<Category>> getAll() {
         List<Category> listCategory = CategoryService.findAll();
-        for(Category category : listCategory){
-            for(CategoryItem item : category.getListCategory())    {
-                System.out.println("CHECK: "+item.getType_category_item());
-            }
-        }
-
         return new ResponseEntity<>(CategoryService.findAll(), HttpStatus.OK);
     }
 
