@@ -25,7 +25,6 @@ public class Account {
 
 
     @OneToMany(mappedBy = "accountCreateCategory")
-    @JsonIgnore
     public List<Category> listCategory;
 
     @OneToMany(mappedBy = "account")

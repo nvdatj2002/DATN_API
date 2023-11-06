@@ -28,14 +28,11 @@ public class CategoryController {
 
     @GetMapping()
     public ResponseEntity<List<Category>> getAll() {
-        List<Category> listCategory = CategoryService.findAll();
-        for(Category category : listCategory){
-            for(CategoryItem item : category.getListCategory())    {
-                System.out.println("CHECK: "+item.getType_category_item());
-            }
+        List<Category> categories = CategoryService.findAll();
+        for (Category category : categories) {
+            category.removeDuplicateCategoryItems();
         }
-
-        return new ResponseEntity<>(CategoryService.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @GetMapping("{id}")
@@ -126,7 +123,7 @@ public class CategoryController {
 
         CategoryItem newcategoryItem = new CategoryItem();
         newcategoryItem.setType_category_item(typeCategoryItem);
-        newcategoryItem.setCategoryNew(categorysave);
+        newcategoryItem.setCategory(categorysave);
         newcategoryItem.setAccount(accountsave);
         newcategoryItem.setCreate_date(create_date);
         newcategoryItem.setStatus(true);
@@ -144,16 +141,16 @@ public class CategoryController {
         CategoryItem categoryItemold = CategoryService.findByIdCategoryItem(id);
         categoryItemold.setAccount(accountsave);
         if (typeCategoryItemsave.equals("") && idCategorysave != 0) {
-            categoryItemold.setCategoryNew(categorysave);
+            categoryItemold.setCategory(categorysave);
         } else if (!typeCategoryItemsave.equals("") && idCategorysave == 0) {
             categoryItemold.setType_category_item(typeCategoryItemsave);
         } else if (!typeCategoryItemsave.equals("") && idCategorysave != 0) {
             categoryItemold.setType_category_item(typeCategoryItemsave);
-            categoryItemold.setCategoryNew(categorysave);
+            categoryItemold.setCategory(categorysave);
         }
         CategoryItem newcategoryItem = CategoryService.updateCategoryItem(categoryItemold);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", newcategoryItem),
-                HttpStatus.CREATED);
+                HttpStatus.OK);
     }
 
     @DeleteMapping("/categoryItem/{id}")
