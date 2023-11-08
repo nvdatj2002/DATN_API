@@ -31,6 +31,7 @@ public class Shop {
     @OneToOne(mappedBy = "shopAddress")
     private AddressShop addressShop;
     private int status;
+    
     @OneToMany(mappedBy = "shop")
     private List<Product> products;
 }
