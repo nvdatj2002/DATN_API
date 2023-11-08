@@ -108,7 +108,7 @@ public class ProductController {
 		Map<Integer, Object[]> listProducts = new HashMap<>();
 		Shop shop = null;
 		Object[] dataReturn = null;
-		// CHECK ID PRODUCT
+		// CHECK ID PRODUCT .....
 		for (Shop s : shopService.findAll()) {
 			for (Product p : s.getProducts()) {
 				if (p.getId() == id) {
