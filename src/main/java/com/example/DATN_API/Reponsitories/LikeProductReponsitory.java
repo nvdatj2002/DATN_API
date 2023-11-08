@@ -25,4 +25,11 @@ public interface LikeProductReponsitory extends JpaRepository<LikeProduct, Integ
             "WHERE lp.id_account = :accountId " +
             "FOR JSON AUTO")
 	String findProductDetailsByAccountId(@Param("accountId") int accountId);
+	
+	@Query(
+		    nativeQuery = true,
+		    value = "SELECT * FROM like_product lp WHERE lp.id_product = :productId AND lp.id_account = :accountId"
+		)
+		LikeProduct findByProductLikeIdAndAccountLikeId(@Param("productId") int productId, @Param("accountId") int accountId);
+
 }
