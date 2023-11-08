@@ -35,4 +35,15 @@ public class AccountService {
 	public Account findById(int id) {
 		return accountReponsitory.findById(id).get();
 	}
+	
+	public Account changePass(Account account) {
+		try {
+			Account accountCreate = accountReponsitory.save(account);
+			return accountCreate;
+		} catch (Exception e) {
+			e.printStackTrace();
+			LogError.saveToLog(e);
+		}
+		return null;
+	}
 }
