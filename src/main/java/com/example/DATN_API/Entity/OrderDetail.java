@@ -23,10 +23,10 @@ public class OrderDetail {
 //    @JsonBackReference
 //    private Order orders;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_product")
+    @JsonIgnore
     private Product productOrder;
-
 
     private int quantity;
 }

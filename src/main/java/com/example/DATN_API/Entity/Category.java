@@ -39,7 +39,6 @@ public class Category {
                     uniqueCategoryItems.add(categoryItem);
                 }
             }
-
             listCategory.clear();
             listCategory.addAll(uniqueCategoryItems);
         }

@@ -49,7 +49,10 @@ public class Product {
     @OneToOne(mappedBy = "product_like")
     private LikeProduct likeProduct;
 
-    @OneToOne(mappedBy = "productOrder")
-    private OrderDetail orderDetail;
+    @OneToMany(mappedBy = "productOrder")
+    private List<OrderDetail> listOrderDetail;
+
+    @OneToMany(mappedBy = "product")
+    public List<Storage> listStorage;
 
 }

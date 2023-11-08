@@ -37,10 +37,9 @@ public class CategoryController {
 
     @GetMapping("{id}")
     public ResponseEntity<Category> findById(@PathVariable Integer id) {
-        if (CategoryService.existsByIdCategory(id)) {
-            return new ResponseEntity<>(CategoryService.findByIdCategory(id), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Category categories = CategoryService.findByIdCategory(id);
+        categories.removeDuplicateCategoryItems();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @PostMapping()
@@ -118,8 +117,9 @@ public class CategoryController {
     public ResponseEntity<ResponObject> createCategoryItem(@RequestParam("type_categoryItem") String typeCategoryItem, @RequestParam("category") Integer idCategory, @RequestParam("create_date") Date create_date, @RequestParam("idAccount") Integer idAccount) {
         Category categorysave = CategoryService.findByIdCategory(idCategory);
         Account accountsave = CategoryService.findAccountById(idAccount);
-        if(typeCategoryItem.equals("")){
-            System.out.print("CHECK: "+typeCategoryItem);}
+        if (typeCategoryItem.equals("")) {
+            System.out.print("CHECK: " + typeCategoryItem);
+        }
 
         CategoryItem newcategoryItem = new CategoryItem();
         newcategoryItem.setType_category_item(typeCategoryItem);
@@ -127,7 +127,7 @@ public class CategoryController {
         newcategoryItem.setAccount(accountsave);
         newcategoryItem.setCreate_date(create_date);
         newcategoryItem.setStatus(true);
-        CategoryItem newItem  = CategoryService.createCategoryItem(newcategoryItem);
+        CategoryItem newItem = CategoryService.createCategoryItem(newcategoryItem);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", newItem),
                 HttpStatus.CREATED);
     }
