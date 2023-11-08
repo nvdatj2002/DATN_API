@@ -39,11 +39,8 @@ public class Product {
     private Date start_promotion;
     private Date end_promotion;
     private String description;
-
     private int status;
 
-    @OneToOne(mappedBy = "product")
-    private DetailProduct detailProducts;
 
     @ManyToOne
     @JoinColumn(name = "id_category_item")
@@ -52,7 +49,9 @@ public class Product {
     @OneToOne(mappedBy = "product_like")
     private LikeProduct likeProduct;
 
-    @OneToOne(mappedBy = "productOrder")
-    private OrderDetail orderDetail;
+    @OneToMany(mappedBy = "productOrder")
+    private List<OrderDetail> listOrderDetail;
 
+    @OneToMany(mappedBy = "product")
+    public List<Storage> listStorage;
 }

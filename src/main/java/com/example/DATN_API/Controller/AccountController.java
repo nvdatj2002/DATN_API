@@ -75,6 +75,7 @@ public class AccountController {
 			}
 		} catch (Exception e) {
 			response.put("message", "TÊN ĐĂNG NHẬP KHÔNG HỢP LỆ!");
+			e.printStackTrace();
 		}
 		return ResponseEntity.ok(response);
 	}
@@ -87,23 +88,23 @@ public class AccountController {
 			Account createAcc = new Account();
 			LocalDate localDate = LocalDate.now();
 			Date date = java.sql.Date.valueOf(localDate);
-			if (accounts == null) {
+			if (accounts != null) {
+				response.put("message", " TÊN TÀI KHOẢN ĐÃ TỒN TẠI!");
+			} else if (account.getUsername().length() < 6) {
+				response.put("message", "TÊN TÀI KHOẢN QUÁ NGẮN!");
+			} else if (account.getPassword().length() < 6) {
+				response.put("message", "MẬT KHẨU QUÁ NGẮN!");
+			} else {
 				// Account
 				createAcc.setUsername(account.getUsername());
 				createAcc.setPassword(account.getPassword());
-				createAcc.setCreate_date(date);
+				createAcc.setCreatedate(date);
 				createAcc.setStatus(false);
 				// Begin create new Account
 				accountService.createAccount(createAcc);
 				response.put("success", true);
 				response.put("message", "ĐĂNG KÝ THÀNH CÔNG!");
 				response.put("data", createAcc);
-			} else if (account.getUsername().length() < 6) {
-				response.put("message", "TÊN TÀI KHOẢN QUÁ NGẮN!");
-			} else if (account.getPassword().length() < 6) {
-				response.put("message", "MẬT KHẨU QUÁ NGẮN!");
-			} else {
-				response.put("message", " TÊN TÀI KHOẢN ĐÃ TỒN TẠI!");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -118,35 +119,38 @@ public class AccountController {
 			String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
 					+ "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 			String charSet = "abcdefghiklmnopqrstuwvxyz" + "1234567890" + "!@#%&*";
-			String newPassword = "";
-			InfoAccount inAccounts = infoAccountService.findByEmail(inAccount.getEmail());
-			Account account = accountService.findByUsername(inAccounts.getAccount().getUsername());
-			Random rand = new Random();
-			int len = 12;
-			for (int i = 0; i < len; i++) {
-				newPassword += charSet.charAt(rand.nextInt(charSet.length()));
-			}
 			if (Pattern.compile(regexPattern).matcher(inAccount.getEmail()).matches() != true) {
 				response.put("message", "EMAIL KHÔNG HỢP LỆ!");
-			} else if (inAccounts.getAccount().isStatus() == true) {
-				response.put("message",
-						"HIỆN TẠI, TÀI KHOẢN CỦA BẠN ĐANG BỊ KHÓA, VUI LÒNG LIÊN HỆ CSKH ĐỂ ĐƯỢC HỔ TRỢ SỚM NHẤT!");
 			} else {
-				account.setPassword(newPassword);
-				accountService.changePass(account);
-				MailInformation mail = new MailInformation();
-				mail.setTo(inAccount.getEmail());
-				mail.setSubject("Quên mật khẩu");
-				mail.setBody("<html><body>" + "<p>Xin chào " + account.getUsername() + ",</p>"
-						+ "<p>Chúng tôi nhận được yêu cầu thiết lập lại mật khẩu cho tài khoản Diamond Fashion của bạn.</p>"
-						+ "<p>Vui lòng không chia sẽ mật khẩu này cho bất cứ ai:" + "<h3>" + newPassword + "</h3>"
-						+ "</p>"
-						+ "<p>Nếu bạn không yêu cầu thiết lập lại mật khẩu, vui lòng liên hệ Bộ phận Chăm sóc Khách hàng tại đây</p>"
-						+ "<p>Trân trọng,</p>"
-						+ "<p>Bạn có thắc mắc? Liên hệ chúng tôi tại đây khuong8177@gmail.com.</p>" + "</body></html>");
-				mailServiceImplement.send(mail);
-				response.put("success", true);
-				response.put("message", "MẬT KHẨU CỦA BẠN ĐÃ ĐƯỢC GỬI QUA EMAIL!");
+				InfoAccount inAccounts = infoAccountService.findByEmail(inAccount.getEmail());
+				Account account = accountService.findByUsername(inAccounts.getInfaccount().getUsername());
+				if (inAccounts.getInfaccount().isStatus() == true) {
+					response.put("message",
+							"HIỆN TẠI, TÀI KHOẢN CỦA BẠN ĐANG BỊ KHÓA, VUI LÒNG LIÊN HỆ CSKH ĐỂ ĐƯỢC HỔ TRỢ SỚM NHẤT!");
+				} else {
+					String newPassword = "";
+					Random rand = new Random();
+					int len = 12;
+					for (int i = 0; i < len; i++) {
+						newPassword += charSet.charAt(rand.nextInt(charSet.length()));
+					}
+					account.setPassword(newPassword);
+					accountService.changePass(account);
+					MailInformation mail = new MailInformation();
+					mail.setTo(inAccount.getEmail());
+					mail.setSubject("Quên mật khẩu");
+					mail.setBody("<html><body>" + "<p>Xin chào " + account.getUsername() + ",</p>"
+							+ "<p>Chúng tôi nhận được yêu cầu thiết lập lại mật khẩu cho tài khoản Diamond Fashion của bạn.</p>"
+							+ "<p>Vui lòng không chia sẽ mật khẩu này cho bất cứ ai:" + "<h3>" + newPassword + "</h3>"
+							+ "</p>"
+							+ "<p>Nếu bạn không yêu cầu thiết lập lại mật khẩu, vui lòng liên hệ Bộ phận Chăm sóc Khách hàng tại đây</p>"
+							+ "<p>Trân trọng,</p>"
+							+ "<p>Bạn có thắc mắc? Liên hệ chúng tôi tại đây khuong8177@gmail.com.</p>"
+							+ "</body></html>");
+					mailServiceImplement.send(mail);
+					response.put("success", true);
+					response.put("message", "MẬT KHẨU CỦA BẠN ĐÃ ĐƯỢC GỬI QUA EMAIL!");
+				}
 			}
 		} catch (Exception e) {
 			response.put("message", "KHÔNG TÌM THẤY TÀI KHOẢN CÓ EMAIL " + inAccount.getEmail());
@@ -154,29 +158,15 @@ public class AccountController {
 		}
 		return ResponseEntity.ok(response);
 	}
-	
-	@PostMapping("/profile")
-	public ResponseEntity<Map<String, Object>> profileAccount(@RequestBody Account account) {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			Account accounts = accountService.findByUsername("account1");
-			InfoAccount inAccounts = infoAccountService.findById_account(accounts.getId());
-			response.put("success", true);
-			response.put("fullname", inAccounts.getFullname());
-			response.put("phone", inAccounts.getPhone());
-			response.put("email", inAccounts.getEmail());
-			response.put("id_card", inAccounts.getId_card());
-			response.put("city", "Ho Chi Minh");
-			response.put("district", "Quan 12");
-			response.put("ward", "Dong Hung Thuan");
-			response.put("address", "195 Nguyen Van Qua");
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.put("message", "TÀI KHOẢN CỦA BẠN CHƯA CÓ THÔNG TIN, VUI LÒNG CẬP NHẬT ĐẦY ĐỦ THÔNG TIN!");
+
+	@GetMapping("/profile")
+	public ResponseEntity<InfoAccount> profileAccount() {
+		if (infoAccountService.findById_account(5) != null) {
+			return new ResponseEntity<>(infoAccountService.findById_account(5), HttpStatus.OK);
 		}
-		return ResponseEntity.ok(response);
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	@PostMapping("/updateprofile")
 	public ResponseEntity<Map<String, Object>> updateProfile(@RequestBody InfoAccount inAccount) {
 		Map<String, Object> response = new HashMap<>();
@@ -187,16 +177,20 @@ public class AccountController {
 					|| inAccount.getEmail() == null) {
 				response.put("message", "VUI LÒNG NHẬP ĐẦY ĐỦ NHỮNG THÔNG TIN QUAN TRỌNG!");
 			} else {
+				Account account = accountService.findByUsername("account1");
+				InfoAccount inAccounts = infoAccountService.findById_account(account.getId());
 				if (inAccount.getPhone().length() != 10) {
 					response.put("message", "SỐ ĐIỆN THOẠI KHÔNG HỢP LỆ!");
 				} else if (inAccount.getId_card().length() != 12) {
 					response.put("message", "SỐ CĂN CƯỚC CÔNG DÂN KHÔNG HỢP LỆ!");
 				} else if (Pattern.compile(regexPattern).matcher(inAccount.getEmail()).matches() != true) {
 					response.put("message", "EMAIL KHÔNG HỢP LỆ!");
+				} else if (inAccounts == null) {
+					inAccount.setInfaccount(account);
+					infoAccountService.createProfile(inAccount);
+					response.put("message", "CẬP NHẬT THÔNG TIN THÀNH CÔNG!");
 				} else {
-					Account account = accountService.findByUsername("account1");
-					InfoAccount inAccounts = infoAccountService.findById_account(account.getId());
-					inAccount.setAccount(account);
+					inAccount.setInfaccount(account);
 					inAccount.setId(inAccounts.getId());
 					infoAccountService.createProfile(inAccount);
 					response.put("message", "CẬP NHẬT THÔNG TIN THÀNH CÔNG!");

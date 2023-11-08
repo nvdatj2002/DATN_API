@@ -1,36 +1,46 @@
 package com.example.DATN_API.Entity;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "category")
-
 public class Category {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String type_category;
-
-    @Temporal(TemporalType.DATE)
-    @Column(name = "create_date")
-    Date create_date = new Date();
-
+    private Date create_date;
+    private String image;
+    private Boolean status;
 
     @OneToMany(mappedBy = "category")
-    public List<CategoryItem> listCategory;
+    private List<CategoryItem> listCategory;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "id_account")
     private Account accountCreateCategory;
+
+    public void removeDuplicateCategoryItems() {
+        if (listCategory != null) {
+            Set<Integer> seenIds = new HashSet<>();
+            List<CategoryItem> uniqueCategoryItems = new ArrayList<>();
+
+            for (CategoryItem categoryItem : listCategory) {
+                if (seenIds.add(categoryItem.getId())) {
+                    uniqueCategoryItems.add(categoryItem);
+                }
+            }
+            listCategory.clear();
+            listCategory.addAll(uniqueCategoryItems);
+        }
+    }
 }

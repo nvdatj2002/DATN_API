@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -22,16 +23,14 @@ public class Shop {
     private String shop_name;
 
     @OneToOne()
-    @JsonIgnore
     @JoinColumn(name = "id_account")
-    private Account account;
+    private Account accountShop;
 
     private String image;
-
+    private Date create_date;
     @OneToOne(mappedBy = "shopAddress")
     private AddressShop addressShop;
-
+    private int status;
     @OneToMany(mappedBy = "shop")
-    @JsonIgnore
     private List<Product> products;
 }

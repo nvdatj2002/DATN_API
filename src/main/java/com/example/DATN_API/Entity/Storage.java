@@ -6,32 +6,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "info_account")
-public class InfoAccount {
+@Table(name = "storage")
+public class Storage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private int quantity;
+
     @OneToOne
-    @JoinColumn(name = "id_account")
-    private Account Infaccount;
+    @JsonIgnore
+    @JoinColumn(name = "id_product")
+    private Product product;
 
-    private String fullname;
-
-    private String id_card;
-
-    private String phone;
-
-    private int gender;
-
-    private String email;
-
-    private String image;
-
+    private Date create_date;
 }

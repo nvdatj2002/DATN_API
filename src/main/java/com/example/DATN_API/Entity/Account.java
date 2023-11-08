@@ -20,19 +20,26 @@ public class Account {
     private int id;
     private String username;
     private String password;
-    private Date create_date;
-    public boolean status;
+    private Date createdate;
+    private boolean status;
+
 
     @OneToMany(mappedBy = "accountCreateCategory")
-    @JsonIgnore
     public List<Category> listCategory;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "account")
-//    public List<CategoryItem> listCategoryItem;
+    @OneToMany(mappedBy = "account")
+    public List<CategoryItem> listCategoryItem;
 
-    @OneToOne(mappedBy = "account")
+    @OneToOne(mappedBy = "accountShop")
+    @JsonIgnore
     private Shop shop;
+
+    @OneToOne(mappedBy = "Infaccount")
+    private InfoAccount infoAccount;
+
+    @OneToMany(mappedBy = "Addressaccount")
+    private List<AddressAccount> address_account;
+
 
     @OneToMany(mappedBy = "account_like")
     private List<LikeProduct> likeProductes;

@@ -4,6 +4,8 @@ import com.example.DATN_API.Entity.Account;
 import com.example.DATN_API.Entity.InfoAccount;
 import com.example.DATN_API.Reponsitories.InfoAccountReponsitory;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,10 @@ import org.springframework.stereotype.Service;
 public class InfoAccountService {
 	@Autowired
 	InfoAccountReponsitory infoAccountReponsitory;
+	
+	public List<InfoAccount> findAll() {
+		return infoAccountReponsitory.findAll();
+	}
 
 	public InfoAccount findByEmail(String email) {
 		try {

@@ -18,8 +18,8 @@ public class AddressAccount {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "create_by")
-    private InfoAccount account;
+    @JoinColumn(name = "id_account")
+    private Account Addressaccount;
 
     private String city;
     private String district;
