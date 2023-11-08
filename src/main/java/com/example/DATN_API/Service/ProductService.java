@@ -71,4 +71,15 @@ public class ProductService {
 //										   String status) {
 //		return productReponsitory.findByProductName(keyword, minQuantity, maxQuantity, idCategoryItem, status);
 //	}
+	
+	 public Product getProductById(int productId) {
+	        Optional<Product> optionalProduct = productReponsitory.findById(productId);
+	        
+	        if (optionalProduct.isPresent()) {
+	            return optionalProduct.get();
+	        } else {
+	            // Xử lý trường hợp không tìm thấy sản phẩm (nếu cần)
+	            return null;
+	        }
+	    }
 }
