@@ -41,4 +41,11 @@ public class ShopService {
 	public Boolean existsById(Integer id) {
 		return ShopReponsitory.existsById(id) ? true : false;
 	}
+	
+	public Boolean existByAccount(Integer id_account) {
+		if(ShopReponsitory.findByUsername(id_account) != null) {
+			return false;
+		}
+		return true;
+	}
 }
