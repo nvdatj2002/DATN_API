@@ -20,4 +20,5 @@ public interface ProductReponsitory extends JpaRepository<Product, Integer> {
 	@Query("SELECT p FROM Product p WHERE CAST(p.id AS STRING) LIKE %?1%"
 			+ " AND CAST(p.categoryItem_product.id AS STRING) LIKE %?2%" + " AND CAST(p.status AS STRING) LIKE %?3%")
 	List<Product> findByKey(String keyword, String idCategoryItem, String status);
+
 }

@@ -53,7 +53,7 @@ public class CategoryController {
         category.setType_category(type_category);
         category.setCreate_date(create_date);
         Category newcate = CategoryService.createCategory(category);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been added.", newcate),
+        return new ResponseEntity<>(new ResponObject("success", "Thêm thành công.", newcate),
                 HttpStatus.CREATED);
     }
 
@@ -87,15 +87,15 @@ public class CategoryController {
             categorysave.setType_category(type_categorysave);
             CategoryService.updateCategory(categorysave);
         }
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been updated.", categorysave), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponObject("success", "Cập nhật thành công.", categorysave), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<ResponObject> delete(@PathVariable Integer id) {
         if (CategoryService.deleteCategory(id)) {
-            return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been deleted.", id), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponObject("success", "Xóa thành công.", id), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new ResponObject("ERROR", "Category error deleted.", id), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponObject("error", "Có lỗi xảy ra.", id), HttpStatus.OK);
     }
 
 
@@ -117,10 +117,6 @@ public class CategoryController {
     public ResponseEntity<ResponObject> createCategoryItem(@RequestParam("type_categoryItem") String typeCategoryItem, @RequestParam("category") Integer idCategory, @RequestParam("create_date") Date create_date, @RequestParam("idAccount") Integer idAccount) {
         Category categorysave = CategoryService.findByIdCategory(idCategory);
         Account accountsave = CategoryService.findAccountById(idAccount);
-        if (typeCategoryItem.equals("")) {
-            System.out.print("CHECK: " + typeCategoryItem);
-        }
-
         CategoryItem newcategoryItem = new CategoryItem();
         newcategoryItem.setType_category_item(typeCategoryItem);
         newcategoryItem.setCategory(categorysave);
@@ -128,7 +124,7 @@ public class CategoryController {
         newcategoryItem.setCreate_date(create_date);
         newcategoryItem.setStatus(true);
         CategoryItem newItem = CategoryService.createCategoryItem(newcategoryItem);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", newItem),
+        return new ResponseEntity<>(new ResponObject("success", "Thêm thành công.", newItem),
                 HttpStatus.CREATED);
     }
 
@@ -149,16 +145,16 @@ public class CategoryController {
             categoryItemold.setCategory(categorysave);
         }
         CategoryItem newcategoryItem = CategoryService.updateCategoryItem(categoryItemold);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", newcategoryItem),
+        return new ResponseEntity<>(new ResponObject("success", "Cập nhật thành công.", newcategoryItem),
                 HttpStatus.OK);
     }
 
     @DeleteMapping("/categoryItem/{id}")
     public ResponseEntity<ResponObject> deleteCategoryItem(@PathVariable("id") Integer id) {
         if (CategoryService.deleteCategoryItem(id)) {
-            return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been deleted.", id), HttpStatus.OK);
+            return new ResponseEntity<>(new ResponObject("success", "Xóa thành công.", id), HttpStatus.OK);
         }
-        return new ResponseEntity<>(new ResponObject("ERROR", "CategoryItem error deleted.", id), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponObject("error", "Có lỗi xảy ra.", id), HttpStatus.OK);
 
     }
 

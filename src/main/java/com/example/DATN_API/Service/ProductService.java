@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.DATN_API.Entity.Product;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

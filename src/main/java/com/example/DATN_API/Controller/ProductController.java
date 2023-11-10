@@ -50,7 +50,7 @@ public class ProductController {
 		Shop shop2 = shopService.findById(shop);
 		product.setShop(shop2);
 		Product productnew = productService.createProduct(product);
-		return new ResponseEntity<>(new ResponObject("SUCCESS", "Thêm thành công.", productnew),
+		return new ResponseEntity<>(new ResponObject("success", "Thêm thành công.", productnew),
 				HttpStatus.CREATED);
 	}
 
@@ -58,11 +58,11 @@ public class ProductController {
 	public ResponseEntity<ResponObject> update(@PathVariable("id") Integer id, @RequestBody Product product) {
 		if (!productService.existsById(id))
 			return new ResponseEntity<>(
-					new ResponObject("NOT_FOUND", "Product_id: " + id + " does not exists.", product),
+					new ResponObject("error", "Sản phẩm : " + id + "không tồn tại.", product),
 					HttpStatus.NOT_FOUND);
 
 		Product productnew = productService.updateProduct(id, product);
-		return new ResponseEntity<>(new ResponObject("SUCCESS", "Cập nhật thành công.", productnew),
+		return new ResponseEntity<>(new ResponObject("success", "Cập nhật thành công.", productnew),
 				HttpStatus.OK);
 	}
 
@@ -74,7 +74,7 @@ public class ProductController {
 		Product product = productService.findById(id);
 		product.setStatus(2);
 		productService.updateProduct(id, product);
-		return new ResponseEntity<>(new ResponObject("SUCCESS", "Product has been deleted.", id), HttpStatus.OK);
+		return new ResponseEntity<>(new ResponObject("success", "Xóa thành công.", id), HttpStatus.OK);
 	}
 
 	// Storage
@@ -84,7 +84,7 @@ public class ProductController {
 		Product newProduct = productService.findById(product);
 		storage.setProduct(newProduct);
 		Storage storagesave = storageService.createStorage(storage);
-		return new ResponseEntity<>(new ResponObject("SUCCESS", "Storage has been added.", storagesave),
+		return new ResponseEntity<>(new ResponObject("success", "Thêm thành công.", storagesave),
 				HttpStatus.CREATED);
 	}
 
@@ -169,5 +169,6 @@ public class ProductController {
 					HttpStatus.OK);
 		}
 	}
+
 
 }
