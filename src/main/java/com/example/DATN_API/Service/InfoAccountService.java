@@ -27,6 +27,24 @@ public class InfoAccountService {
 		return null;
 	}
 	
+	public InfoAccount findByPhone(String phone) {
+		try {
+			return infoAccountReponsitory.findByPhone(phone);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public InfoAccount findByIdCard(String id_card) {
+		try {
+			return infoAccountReponsitory.findByIdCard(id_card);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public InfoAccount findById_account(int id_account) {
 		try {
 			return infoAccountReponsitory.findById_account(id_account);

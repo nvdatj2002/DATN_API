@@ -239,24 +239,37 @@ public class AccountController {
 				Account account = accountService.findByUsername(username);
 				InfoAccount inAccounts = infoAccountService.findById_account(account.getId());
 				InfoAccount inCheck = infoAccountService.findByEmail(inAccount.getEmail());
-				if (inAccount.getPhone().length() != 10) {
+				InfoAccount inCheck1 = infoAccountService.findByPhone(inAccount.getPhone());
+				InfoAccount inCheck2 = infoAccountService.findByIdCard(inAccount.getId_card());
+				int phone = Integer.parseInt(inAccount.getPhone());
+				if (inAccount.getFullname().equals("") || inAccount.getPhone().equals("")|| inAccount.getEmail().equals("")
+						|| inAccount.getId_card().equals("")) {
+					response.put("message", "VUI LÒNG NHẬP ĐẦY ĐỦ THÔNG TIN TRƯỚC KHI CẬP NHẬT!");
+				} else if (inAccount.getPhone().length() != 10) {
 					response.put("message", "SỐ ĐIỆN THOẠI KHÔNG HỢP LỆ!");
+				} else if (!inAccount.getPhone().substring(0, 1).equals("0")) {
+					response.put("message", "SỐ ĐIỆN THOẠI KHÔNG HỢP LỆ!");
+				} else if (inCheck1 != null && inCheck1.getInfaccount().getId() != account.getId()) {
+					response.put("message", "SỐ ĐIỆN THOẠI NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
 				} else if (inAccount.getId_card().length() != 12) {
 					response.put("message", "SỐ CĂN CƯỚC CÔNG DÂN KHÔNG HỢP LỆ!");
+				} else if (inCheck2 != null && inCheck2.getInfaccount().getId() != account.getId()) {
+					response.put("message", "SỐ CĂN CƯỚC CÔNG DÂN NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
 				} else if (Pattern.compile(regexPattern).matcher(inAccount.getEmail()).matches() != true) {
 					response.put("message", "EMAIL KHÔNG HỢP LỆ!");
 				} else if (inCheck != null && inCheck.getInfaccount().getId() != account.getId()) {
 					response.put("message", "EMAIL NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
 				} else {
-					int phone = Integer.parseInt(inAccount.getPhone());
 					inAccount.setInfaccount(account);
 					inAccount.setId(inAccounts.getId());
 					infoAccountService.createProfile(inAccount);
+					response.put("success", true);
 					response.put("message", "CẬP NHẬT THÔNG TIN THÀNH CÔNG!");
 				}
 			}
 		} catch (NumberFormatException e) {
-			response.put("message", "SAI ĐỊNH DẠNG SỐ ĐIỆN THOẠI, VUI LÒNG CHỈ NHẬP CÁC SỐ 0 - 9!");
+			response.put("message",
+					"SAI ĐỊNH DẠNG SỐ ĐIỆN THOẠI, VUI LÒNG CHỈ NHẬP CÁC SỐ 0 - 9 VÀ KHÔNG NHẬP QUÁ 10 SỐ!");
 			e.printStackTrace();
 		} catch (Exception e) {
 			response.put("message", "Lỗi CẬP NHẬT PROFILE!");
@@ -308,6 +321,7 @@ public class AccountController {
 				// Create shop address
 				address.setShopAddress(shop);
 				addressService.createAddressShop(address);
+				response.put("success", true);
 				response.put("message", "GỬI YÊU CẦU THÀNH CÔNG, VUI LÒNG CHỜ XÉT DUYỆT!");
 			}
 		} catch (Exception e) {
