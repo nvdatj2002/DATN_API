@@ -32,34 +32,40 @@ public class LikeProductController {
 	    return likeProductRepository.findProductDetailsByAccountId(accountId);
 	}
 
-	
-	
+
+
 
 
 	@PostMapping("/api/like_Products")
 	public ResponseEntity<String> likeProduct(@RequestParam("accountId") int accountId, @RequestParam("productId") int productId) {
-	    LikeProduct likeProduct = likeProductRepository.findByProductLikeIdAndAccountLikeId(productId, accountId);
-	    if (likeProduct != null) {
-	        return ResponseEntity.badRequest().body("Sản phẩm đã được like trước đó.");
-	    }
-	    
-	    // Tạo một đối tượng LikeProduct mới và gán sản phẩm và tài khoản tương ứng
-	    likeProduct = new LikeProduct();
-	    
-	    // Lấy sản phẩm từ productId 
-	    Product product = productService.getProductById(productId);
-	    Account account = accountService.getAccountById(accountId);
-	    
-	    likeProduct.setProductLike(product);
-	    likeProduct.setAccountLike(account);
-	    
-	    likeProduct.setCreateDate(LocalDateTime.now());
-	    likeProductRepository.save(likeProduct);
-	    
-	    return ResponseEntity.ok("Sản phẩm đã được like.");
+		LikeProduct likeProduct = likeProductRepository.findByProductLikeIdAndAccountLikeId(productId, accountId);
+		if (likeProduct != null) {
+			return ResponseEntity.badRequest().body("Sản phẩm đã được like trước đó.");
+		}
+
+		// Tạo một đối tượng LikeProduct mới và gán sản phẩm và tài khoản tương ứng
+		likeProduct = new LikeProduct();
+
+		// Lấy sản phẩm từ productId
+		Product product = productService.findById(productId);
+
+		if (product == null) {
+			return ResponseEntity.badRequest().body("Không tìm thấy sản phẩm với ID: " + productId);
+		}
+
+		Account account = accountService.getAccountById(accountId);
+
+		likeProduct.setProductLike(product);
+		likeProduct.setAccountLike(account);
+
+		likeProduct.setCreateDate(LocalDateTime.now());
+		likeProductRepository.save(likeProduct);
+
+		return ResponseEntity.ok("Sản phẩm đã được like.");
 	}
 
-	
+
+
 	@DeleteMapping("/api/unlike_Products")
     public ResponseEntity<String> unlikeProduct(@RequestParam("accountId") int accountId, @RequestParam("productId") int productId) {
         LikeProduct likeProduct = likeProductRepository.findByProductLikeIdAndAccountLikeId(productId, accountId);

@@ -10,6 +10,7 @@ import com.example.DATN_API.Entity.Product;
 import com.example.DATN_API.Entity.ResponObject;
 import com.example.DATN_API.Entity.Shop;
 import com.example.DATN_API.Entity.Storage;
+import com.example.DATN_API.Reponsitories.ProductReponsitory;
 import com.example.DATN_API.Service.ShopService;
 import com.example.DATN_API.Service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class ProductController {
 	ShopService shopService;
 	@Autowired
 	StorageService storageService;
+	@Autowired
+	ProductReponsitory productReponsitory;
 
 	@GetMapping()
 	public ResponseEntity<List<Product>> getAll(@RequestParam("status") Optional<String> getstatus) {
@@ -122,13 +125,13 @@ public class ProductController {
 		if (shop != null) {
 			for (Product p : shop.getProducts()) {
 				listProducts.put(p.getId(), new Object[] { p.getId(), p.getProduct_name(), p.getPrice(),
-						p.getCategoryItem_product(), p.getStatus() });
+						p.getCategoryItem_product(), p.getStatus(), p.getImage_product() });
 			}
 			dataReturn = new Object[] { shop.getId(), shop.getShop_name(), shop.getAddressShop(), listProducts };
 		}
 
 		if (listProducts.size() == 0) {
-			return new ResponseEntity<>(new ResponObject("error", "CÓ CÁI NỊT", null), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new ResponObject("error", "Không có thông tin", null), HttpStatus.NOT_FOUND);
 		} else {
 			return new ResponseEntity<>(new ResponObject("success", "GET LIST SUCCESS", dataReturn), HttpStatus.OK);
 		}
@@ -194,5 +197,19 @@ public class ProductController {
 //                    HttpStatus.OK);
 //        }
 //    }
+
+	@GetMapping("/top10")
+	public ResponseEntity<List<Object[]>> getTop10Products() {
+		List<Object[]> top10Products = productReponsitory.getTop10Products();
+		if (top10Products.isEmpty()) {
+			// không có dữ liệu
+			return ResponseEntity.noContent().build();
+		} else {
+			// có dữ liệu và trả về kết quả
+			return ResponseEntity.ok(top10Products);
+		}
+	}
+
+
 
 }

@@ -78,8 +78,10 @@ public class ProductService {
 	        if (optionalProduct.isPresent()) {
 	            return optionalProduct.get();
 	        } else {
-	            // Xử lý trường hợp không tìm thấy sản phẩm (nếu cần)
-	            return null;
+	             return null;
 	        }
 	    }
+
+		
+
 }
