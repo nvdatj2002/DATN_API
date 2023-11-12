@@ -80,8 +80,20 @@ public class RatingController {
     public Double getAverageStarByProduct(@PathVariable int productId) {
         Product product = productReponsitory.findById(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
-        return Math.ceil(rateRepository.findAverageStarByProduct(product)) ;
+
+        // Lấy giá trị trung bình sao từ cơ sở dữ liệu
+        Double averageStar = rateRepository.findAverageStarByProduct(product);
+
+        // Kiểm tra giá trị trung bình sao là null
+        if (averageStar != null) {
+            // Nếu không phải là null, làm tròn và trả về giá trị
+            return Math.round(averageStar * 100.0) / 100.0;
+        } else {
+            // Nếu là null trả về một giá trị mặc định
+            return 0.0; //
+        }
     }
+
 
 
 
