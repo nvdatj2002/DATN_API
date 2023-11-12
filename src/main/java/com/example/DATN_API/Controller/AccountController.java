@@ -100,6 +100,8 @@ public class AccountController {
 			// Begin validate Email
 			if (Pattern.compile(regexPattern).matcher(email).matches() != true) {
 				response.put("message", "EMAIL KHÔNG HỢP LỆ!");
+			} else if (infoAccountService.findByEmail(email) != null) {
+				response.put("message", "EMAIL NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
 			} else {
 				String code = "";
 				Random rand = new Random();
@@ -109,7 +111,7 @@ public class AccountController {
 				}
 				MailInformation mail = new MailInformation();
 				mail.setTo(email);
-				mail.setSubject("Quên mật khẩu");
+				mail.setSubject("MÃ XÁC NHẬN");
 				mail.setBody("<html><body>" + "<p>Xin chào " + email + ",</p>"
 						+ "<p>Chúng tôi nhận được yêu cầu đăng ký tài khoản Diamond Fashion của bạn.</p>"
 						+ "<p>Vui lòng không chia sẽ mã này cho bất cứ ai:" + "<h3>" + code + "</h3>" + "</p>"
@@ -232,40 +234,33 @@ public class AccountController {
 		String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
 				+ "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 		try {
-			if (inAccount.getFullname() == null || inAccount.getPhone() == null || inAccount.getId_card() == null
-					|| inAccount.getEmail() == null) {
-				response.put("message", "VUI LÒNG NHẬP ĐẦY ĐỦ NHỮNG THÔNG TIN QUAN TRỌNG!");
+
+			Account account = accountService.findByUsername(username);
+			InfoAccount inAccounts = infoAccountService.findById_account(account.getId());
+			InfoAccount inCheck = infoAccountService.findByEmail(inAccount.getEmail());
+			InfoAccount inCheck1 = infoAccountService.findByPhone(inAccount.getPhone());
+			InfoAccount inCheck2 = infoAccountService.findByIdCard(inAccount.getId_card());
+			if (inAccount.getPhone().length() != 10) {
+				response.put("message", "SỐ ĐIỆN THOẠI KHÔNG HỢP LỆ!");
+			} else if (!inAccount.getPhone().substring(0, 1).equals("0")) {
+				response.put("message", "SỐ ĐIỆN THOẠI KHÔNG HỢP LỆ!");
+			} else if (inCheck1 != null && inCheck1.getInfaccount().getId() != account.getId()) {
+				response.put("message", "SỐ ĐIỆN THOẠI NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
+			} else if (inAccount.getId_card().length() != 12) {
+				response.put("message", "SỐ CĂN CƯỚC CÔNG DÂN KHÔNG HỢP LỆ!");
+			} else if (inCheck2 != null && inCheck2.getInfaccount().getId() != account.getId()) {
+				response.put("message", "SỐ CĂN CƯỚC CÔNG DÂN NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
+			} else if (Pattern.compile(regexPattern).matcher(inAccount.getEmail()).matches() != true) {
+				response.put("message", "EMAIL KHÔNG HỢP LỆ!");
+			} else if (inCheck != null && inCheck.getInfaccount().getId() != account.getId()) {
+				response.put("message", "EMAIL NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
 			} else {
-				Account account = accountService.findByUsername(username);
-				InfoAccount inAccounts = infoAccountService.findById_account(account.getId());
-				InfoAccount inCheck = infoAccountService.findByEmail(inAccount.getEmail());
-				InfoAccount inCheck1 = infoAccountService.findByPhone(inAccount.getPhone());
-				InfoAccount inCheck2 = infoAccountService.findByIdCard(inAccount.getId_card());
 				int phone = Integer.parseInt(inAccount.getPhone());
-				if (inAccount.getFullname().equals("") || inAccount.getPhone().equals("")|| inAccount.getEmail().equals("")
-						|| inAccount.getId_card().equals("")) {
-					response.put("message", "VUI LÒNG NHẬP ĐẦY ĐỦ THÔNG TIN TRƯỚC KHI CẬP NHẬT!");
-				} else if (inAccount.getPhone().length() != 10) {
-					response.put("message", "SỐ ĐIỆN THOẠI KHÔNG HỢP LỆ!");
-				} else if (!inAccount.getPhone().substring(0, 1).equals("0")) {
-					response.put("message", "SỐ ĐIỆN THOẠI KHÔNG HỢP LỆ!");
-				} else if (inCheck1 != null && inCheck1.getInfaccount().getId() != account.getId()) {
-					response.put("message", "SỐ ĐIỆN THOẠI NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
-				} else if (inAccount.getId_card().length() != 12) {
-					response.put("message", "SỐ CĂN CƯỚC CÔNG DÂN KHÔNG HỢP LỆ!");
-				} else if (inCheck2 != null && inCheck2.getInfaccount().getId() != account.getId()) {
-					response.put("message", "SỐ CĂN CƯỚC CÔNG DÂN NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
-				} else if (Pattern.compile(regexPattern).matcher(inAccount.getEmail()).matches() != true) {
-					response.put("message", "EMAIL KHÔNG HỢP LỆ!");
-				} else if (inCheck != null && inCheck.getInfaccount().getId() != account.getId()) {
-					response.put("message", "EMAIL NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
-				} else {
-					inAccount.setInfaccount(account);
-					inAccount.setId(inAccounts.getId());
-					infoAccountService.createProfile(inAccount);
-					response.put("success", true);
-					response.put("message", "CẬP NHẬT THÔNG TIN THÀNH CÔNG!");
-				}
+				inAccount.setInfaccount(account);
+				inAccount.setId(inAccounts.getId());
+				infoAccountService.createProfile(inAccount);
+				response.put("success", true);
+				response.put("message", "CẬP NHẬT THÔNG TIN THÀNH CÔNG!");
 			}
 		} catch (NumberFormatException e) {
 			response.put("message",
@@ -283,7 +278,9 @@ public class AccountController {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			Account accounts = accountService.findByUsername(account.getUsername());
-			if (account.getPassword().length() < 6) {
+			if (account.getPassword().equals("")) {
+				response.put("message", "VUI LÒNG NHẬP MẬT KHẨU CŨ!");
+			} else if (account.getPassword().length() < 6) {
 				response.put("message", "MẬT KHẨU QUÁ NGẮN!");
 			} else {
 				accounts.setPassword(account.getPassword());
@@ -306,7 +303,8 @@ public class AccountController {
 		Date date = java.sql.Date.valueOf(localDate);
 		try {
 			Account accounts = accountService.findByUsername(username);
-			if (shopService.existByAccount(accounts.getId()) == true) {
+			Shop shops = shopService.existByAccount(accounts.getId());
+			if (shops != null) {
 				response.put("message",
 						"BẠN ĐÃ GỬI 1 YÊU CẦU ĐĂNG KÝ LÊN HỆ THỐNG, VUI LÒNG CHỜ PHẢN HỒI TỪ CHÚNG TÔI ĐỂ TIẾP TỤC!");
 			} else {

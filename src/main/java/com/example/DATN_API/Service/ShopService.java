@@ -5,6 +5,7 @@ package com.example.DATN_API.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.DATN_API.Entity.Account;
 import com.example.DATN_API.Entity.Shop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,10 +43,7 @@ public class ShopService {
 		return ShopReponsitory.existsById(id) ? true : false;
 	}
 	
-	public Boolean existByAccount(Integer id_account) {
-		if(ShopReponsitory.findByUsername(id_account) != null) {
-			return false;
-		}
-		return true;
+	public Shop existByAccount(Integer id_account) {
+		return ShopReponsitory.findByID_Account(id_account);
 	}
 }
