@@ -1,33 +1,35 @@
 package com.example.DATN_API.Controller;
 
-import com.example.DATN_API.Entity.Account;
-import com.example.DATN_API.Entity.InfoAccount;
-import com.example.DATN_API.Entity.ResponObject;
-import com.example.DATN_API.Entity.Shop;
-import com.example.DATN_API.Entity.AddressShop;
-import com.example.DATN_API.Service.AccountService;
-import com.example.DATN_API.Service.InfoAccountService;
-import com.example.DATN_API.Service.MailServiceImplement;
-import com.example.DATN_API.Service.ShopService;
-import com.example.DATN_API.Service.AddressShopService;
-
-import jakarta.validation.constraints.Email;
-
-import com.example.DATN_API.Entity.MailInformation;
-
-import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.nio.charset.Charset;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.DATN_API.Entity.Account;
+import com.example.DATN_API.Entity.AddressShop;
+import com.example.DATN_API.Entity.InfoAccount;
+import com.example.DATN_API.Entity.MailInformation;
+import com.example.DATN_API.Entity.ResponObject;
+import com.example.DATN_API.Entity.Shop;
+import com.example.DATN_API.Service.AccountService;
+import com.example.DATN_API.Service.AddressShopService;
+import com.example.DATN_API.Service.InfoAccountService;
+import com.example.DATN_API.Service.MailServiceImplement;
+import com.example.DATN_API.Service.ShopService;
 
 @RestController
 @RequestMapping("/api/account")
@@ -49,6 +51,9 @@ public class AccountController {
 
 	@Autowired
 	MailServiceImplement mailServiceImplement;
+
+//	@Autowired
+//	BCryptPasswordEncoder encoder;
 
 	@GetMapping()
 	public ResponseEntity<ResponObject> getAll() {
@@ -100,6 +105,7 @@ public class AccountController {
 			// Begin validate Email
 			if (Pattern.compile(regexPattern).matcher(email).matches() != true) {
 				response.put("message", "EMAIL KHÔNG HỢP LỆ!");
+
 			} else if (infoAccountService.findByEmail(email) != null) {
 				response.put("message", "EMAIL NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
 			} else {
@@ -113,14 +119,32 @@ public class AccountController {
 				mail.setTo(email);
 				mail.setSubject("MÃ XÁC NHẬN");
 				mail.setBody("<html><body>" + "<p>Xin chào " + email + ",</p>"
-						+ "<p>Chúng tôi nhận được yêu cầu đăng ký tài khoản Diamond Fashion của bạn.</p>"
+						+ "<p>Chúng tôi nhận được yêu cầu đăng ký tài khoản FE Shop của bạn.</p>"
 						+ "<p>Vui lòng không chia sẽ mã này cho bất cứ ai:" + "<h3>" + code + "</h3>" + "</p>"
 						+ "<p>Trân trọng,</p>"
 						+ "<p>Bạn có thắc mắc? Liên hệ chúng tôi tại đây khuong8177@gmail.com.</p>" + "</body></html>");
 				mailServiceImplement.send(mail);
+				response.put("success", true);
 				response.put("code", code);
-				response.put("message", "MÃ XÁC NHẬN ĐÃ ĐƯỢC GỬI QUA MAIL CỦA BẠN");
+				response.put("message", "MÃ OTP ĐÃ ĐƯỢC GỬI QUA MAIL CỦA BẠN");
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("/{email}/{newpassword}")
+	public ResponseEntity<Map<String, Object>> rePassword(@PathVariable("email") String email,
+			@PathVariable("newpassword") String newpassword) {
+		Map<String, Object> response = new HashMap<>();
+		try {
+			InfoAccount inAcc = infoAccountService.findByEmail(email);
+			Account account = accountService.findById(inAcc.getInfaccount().getId());
+			account.setPassword(newpassword);
+			accountService.createAccount(account);
+			response.put("message", "ĐẶT LẠI MẬT KHẨU THÀNH CÔNG!");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -176,10 +200,12 @@ public class AccountController {
 		try {
 			String regexPattern = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
 					+ "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
-			String charSet = "abcdefghiklmnopqrstuwvxyz" + "1234567890" + "!@#%&*";
+			String charSet = "1234567890";
 			// Begin validate Email
 			if (Pattern.compile(regexPattern).matcher(inAccount.getEmail()).matches() != true) {
 				response.put("message", "EMAIL KHÔNG HỢP LỆ!");
+			} else if (infoAccountService.findByEmail(inAccount.getEmail()) == null) {
+				response.put("message", "KHÔNG TÌM THẤY TÀI KHOẢN CÓ EMAIL " + inAccount.getEmail());
 			} else {
 				InfoAccount inAccounts = infoAccountService.findByEmail(inAccount.getEmail());
 				Account account = accountService.findByUsername(inAccounts.getInfaccount().getUsername());
@@ -190,18 +216,16 @@ public class AccountController {
 					// Email = true, then begin random new password and update
 					String newPassword = "";
 					Random rand = new Random();
-					int len = 12;
+					int len = 8;
 					for (int i = 0; i < len; i++) {
 						newPassword += charSet.charAt(rand.nextInt(charSet.length()));
 					}
-					account.setPassword(newPassword);
-					accountService.changePass(account);
 					MailInformation mail = new MailInformation();
 					mail.setTo(inAccount.getEmail());
 					mail.setSubject("Quên mật khẩu");
 					mail.setBody("<html><body>" + "<p>Xin chào " + account.getUsername() + ",</p>"
-							+ "<p>Chúng tôi nhận được yêu cầu thiết lập lại mật khẩu cho tài khoản Diamond Fashion của bạn.</p>"
-							+ "<p>Vui lòng không chia sẽ mật khẩu này cho bất cứ ai:" + "<h3>" + newPassword + "</h3>"
+							+ "<p>Chúng tôi nhận được yêu cầu thiết lập lại mật khẩu cho tài khoản FE Shop của bạn.</p>"
+							+ "<p>Vui lòng không chia sẽ mã này cho bất cứ ai:" + "<h3>" + newPassword + "</h3>"
 							+ "</p>"
 							+ "<p>Nếu bạn không yêu cầu thiết lập lại mật khẩu, vui lòng liên hệ Bộ phận Chăm sóc Khách hàng tại đây</p>"
 							+ "<p>Trân trọng,</p>"
@@ -209,7 +233,8 @@ public class AccountController {
 							+ "</body></html>");
 					mailServiceImplement.send(mail);
 					response.put("success", true);
-					response.put("message", "MẬT KHẨU CỦA BẠN ĐÃ ĐƯỢC GỬI QUA EMAIL!");
+					response.put("code", newPassword);
+					response.put("message", "MÃ OTP CỦA BẠN ĐÃ ĐƯỢC GỬI QUA EMAIL!");
 				}
 			}
 		} catch (Exception e) {
