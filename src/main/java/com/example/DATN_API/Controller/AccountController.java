@@ -1,92 +1,87 @@
-//package com.example.DATN_API.Controller;
-//
-//import com.example.DATN_API.Entity.Account;
-//import com.example.DATN_API.Entity.ResponObject;
-////import com.example.DATN_API.Reponsitories.AccountReponsitory;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.*;
-//
-//import javax.swing.text.html.Option;
-//import java.text.SimpleDateFormat;
-//import java.util.Date;
-//import java.util.List;
-//import java.util.Optional;
-//
-//@RestController
-//@RequestMapping("/api/account/")
-//@CrossOrigin
-//
-//public class AccountController {
-//
-//    @Autowired
-//    AccountReponsitory accountReponsitory;
-//
-//    @GetMapping("/get_all")
-//    public ResponseEntity<ResponObject> getAll(){
-//        List<Account> accounts = accountReponsitory.findAll();
-//        if(accounts.size() == 0){
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new ResponObject(
-//                        "0","Danh sách tài khoản trống!",""
-//                    )
-//            );
-//        }else {
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new ResponObject(
-//                            "1","Danh sách tài khoản!",accounts
-//                    )
-//            );
-//        }
-//
-//    }
-//
-//    @GetMapping("/get_account_detail/{username}")
-//    public ResponseEntity<ResponObject> getDetailAccount(@PathVariable("username") String username){
-//        Optional<Account> account = accountReponsitory.findById(username);
-//        if(account.isEmpty()){
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new ResponObject(
-//                            "0","Không tìm thấy thông tài khoản: "+username,""
-//                    )
-//            );
-//        }else {
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new ResponObject(
-//                            "1"," thông tài khoản: "+username,account.get()
-//                    )
-//            );
-//        }
-//
-//    }
-//
-//    @PostMapping("create")
-//    public ResponseEntity<ResponObject> create(@RequestBody Account account){
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:MM:ss");
-//        account.setCreate_date(new Date());
-//        Account accountSave = accountReponsitory.save(account);
-//
-//    return ResponseEntity.status(HttpStatus.OK).body(new ResponObject(
-//
-//    ));
-//    }
-//    @PutMapping ("update/{username}")
-//    public ResponseEntity<ResponObject> update(@PathVariable("username") String username,@RequestBody Account account){
-//        account.setUsername(username);
-//        Account accountSave = accountReponsitory.save(account);
-//        return ResponseEntity.status(HttpStatus.OK).body(new ResponObject(
-//            "1","update account successfully",accountSave
-//        ));
-//    }
-//    @PutMapping("delete/{username}")
-//    public ResponseEntity<ResponObject> delete(@PathVariable("username") String username){
-//        Optional<Account> acc = accountReponsitory.findById(username);
-//        Account account = acc.get();
-//        account.setStatus(false);
-//        Account accountSave = accountReponsitory.save(account);
-//        return ResponseEntity.status(HttpStatus.OK).body(new ResponObject(
-//                "1","delete account successfully",accountSave
-//        ));
-//    }
-//}
+package com.example.DATN_API.Controller;
+
+import com.example.DATN_API.Entity.Account;
+import com.example.DATN_API.Entity.ResponObject;
+import com.example.DATN_API.Entity.Role;
+import com.example.DATN_API.Entity.RoleAccount;
+import com.example.DATN_API.Service.AccountService;
+import com.example.DATN_API.Service.JwtTokenProvider;
+import com.example.DATN_API.Service.RoleAccountService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
+@RestController
+@RequestMapping("/api/account")
+@CrossOrigin("*")
+
+public class AccountController {
+	@Autowired
+	AccountService accountService;
+
+	@Autowired
+	RoleAccountService roleAccountService;
+
+	@GetMapping()
+	public ResponseEntity<ResponObject> getAllAccount() {
+		return new ResponseEntity<>(new ResponObject("success", "OK VÀO", accountService.getListAccount()),
+				HttpStatus.OK);
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<ResponObject> login(@RequestBody Account a) {
+		PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		Account account = accountService.findByUsername(a.getUsername());
+		if (account != null) {
+			if (passwordEncoder.matches(a.getPassword(), account.getPassword())) {
+				return new ResponseEntity<>(new ResponObject("success", "OK VÀO", account),
+						HttpStatus.CREATED);
+			} else {
+				return new ResponseEntity<>(new ResponObject("error", "SAI PASS", null),
+						HttpStatus.OK);
+			}
+		} else {
+			return new ResponseEntity<>(new ResponObject("error", "TÀI KHOẢN KHÔNG TỒN TẠI!", null),
+					HttpStatus.OK);
+		}
+	}
+
+	@PostMapping("/create")
+	public ResponseEntity<ResponObject> register(@RequestBody Account a) {
+		try {
+			// CREATE ACCOUNT
+			a.setCreatedate(new Date());
+			a.setStatus(false);
+			accountService.createAccount(a);
+			// CREATE ACCOUNT ROLE
+			Account account = accountService.findByUsername(a.getUsername());
+			Role role = new Role();
+			role.setId(1);
+			RoleAccount roleAccount = new RoleAccount();
+			roleAccount.setAccount(account);
+			roleAccount.setRole(role);
+			roleAccountService.createRoleAccount(roleAccount);
+			return new ResponseEntity<>(new ResponObject("success", "OK CREATE", a), HttpStatus.CREATED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(new ResponObject("error", "FAIL", null), HttpStatus.OK);
+		}
+	}
+}

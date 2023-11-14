@@ -24,6 +24,7 @@ public class Shop {
 
     @OneToOne()
     @JoinColumn(name = "id_account")
+    @JsonIgnore
     private Account accountShop;
 
     private String image;

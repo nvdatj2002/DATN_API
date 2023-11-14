@@ -20,6 +20,7 @@ public class InfoAccount {
 
     @OneToOne
     @JoinColumn(name = "id_account")
+    @JsonIgnore
     private Account Infaccount;
 
     private String fullname;

@@ -19,7 +19,7 @@ public class Category {
     private String type_category;
     private Date create_date;
     private String image;
-    private Boolean status;
+    private int status;
 
     @OneToMany(mappedBy = "category")
     private List<CategoryItem> listCategory;

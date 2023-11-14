@@ -25,6 +25,7 @@ import com.example.DATN_API.Service.ShopService;
 @RestController
 @RequestMapping("/api/business/thongke")
 @CrossOrigin("*")
+
 public class ThongKeBusinessController {
     @Autowired
     OrderService orderService;

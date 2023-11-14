@@ -49,7 +49,7 @@ public class CategoryController {
         Category category = new Category();
         category.setImage(name);
         category.setAccountCreateCategory(newAccount);
-        category.setStatus(true);
+        category.setStatus(0);
         category.setType_category(type_category);
         category.setCreate_date(create_date);
         Category newcate = CategoryService.createCategory(category);

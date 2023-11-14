@@ -1,6 +1,7 @@
 package com.example.DATN_API.Service;
 
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -12,7 +13,7 @@ import com.example.DATN_API.Reponsitories.ShopReponsitory;
 
 @Service
 public class ShopService {
-    @Autowired
+	@Autowired
     ShopReponsitory ShopReponsitory;
 
     public List<Shop> findAll() {
@@ -39,4 +40,11 @@ public class ShopService {
     public Boolean existsById(Integer id) {
         return ShopReponsitory.existsById(id) ? true : false;
     }
+	
+	public Boolean existByAccount(Integer id_account) {
+		if(ShopReponsitory.findByUsername(id_account) != null) {
+			return false;
+		}
+		return true;
+	}
 }
