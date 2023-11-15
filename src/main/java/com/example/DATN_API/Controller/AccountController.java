@@ -20,11 +20,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.DATN_API.Entity.Account;
+import com.example.DATN_API.Entity.Role;
 import com.example.DATN_API.Entity.AddressShop;
 import com.example.DATN_API.Entity.InfoAccount;
 import com.example.DATN_API.Entity.MailInformation;
 import com.example.DATN_API.Entity.ResponObject;
 import com.example.DATN_API.Entity.Shop;
+import com.example.DATN_API.Entity.RoleAccount;
+import com.example.DATN_API.Service.RoleAccountService;
 import com.example.DATN_API.Service.AccountService;
 import com.example.DATN_API.Service.AddressShopService;
 import com.example.DATN_API.Service.InfoAccountService;
@@ -51,6 +54,9 @@ public class AccountController {
 
 	@Autowired
 	MailServiceImplement mailServiceImplement;
+	
+	@Autowired
+	RoleAccountService roleAccService;
 
 //	@Autowired
 //	BCryptPasswordEncoder encoder;
@@ -158,6 +164,8 @@ public class AccountController {
 		try {
 			Account accounts = accountService.findByUsername(account.getUsername());
 			Account createAcc = new Account();
+			RoleAccount roleAcc = new RoleAccount();
+			Role role = new Role();
 			InfoAccount inAcc = new InfoAccount();
 			LocalDate localDate = LocalDate.now();
 			Date date = java.sql.Date.valueOf(localDate);
@@ -178,6 +186,11 @@ public class AccountController {
 				createAcc.setStatus(false);
 				// Begin create new Account
 				accountService.createAccount(createAcc);
+				// Crate role
+				role.setId(1);
+				roleAcc.setAccount_role(createAcc);
+				roleAcc.setRole(role);
+				roleAccService.createRoleAcc(roleAcc);
 				// Default info
 				Account findAcc = accountService.findByUsername(account.getUsername());
 				inAcc.setFullname(findAcc.getUsername());
