@@ -39,4 +39,5 @@ public class Rate {
     @Column(name = "create_date")
     private LocalDateTime createDate;
 
+
 }

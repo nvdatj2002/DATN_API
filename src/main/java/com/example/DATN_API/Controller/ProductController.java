@@ -127,7 +127,7 @@ public class ProductController {
 				listProducts.put(p.getId(), new Object[] { p.getId(), p.getProduct_name(), p.getPrice(),
 						p.getCategoryItem_product(), p.getStatus(), p.getImage_product() });
 			}
-			dataReturn = new Object[] { shop.getId(), shop.getShop_name(), shop.getAddressShop(), listProducts };
+			dataReturn = new Object[] { shop.getId(), shop.getShop_name(), shop.getAddressShop(), listProducts,shop.getImage() };
 		}
 
 		if (listProducts.size() == 0) {

@@ -57,10 +57,17 @@ public class RatingController {
             int accountId = (int) ratingData.get("accountId");
             int start = (int) ratingData.get("start");
             String description = (String) ratingData.get("description");
+
             Product product = productReponsitory.findById(productId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+
             Account account = accountReponsitory.findById(accountId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Account not found"));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+
+            // Kiểm tra xem tài khoản đã đánh giá sản phẩm chưa
+            if (rateRepository.existsByAccount_rateAndProduct_rate(account, product)) {
+                return new ResponseEntity<>("You have already rated this product.", HttpStatus.BAD_REQUEST);
+            }
 
             Rate rate = new Rate();
             rate.setProduct_rate(product);
@@ -70,7 +77,7 @@ public class RatingController {
             rate.setCreateDate(LocalDateTime.now());
 
             rateRepository.save(rate);
-            return new ResponseEntity<>("Rating add success", HttpStatus.CREATED);
+            return new ResponseEntity<>("Rating added successfully", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
