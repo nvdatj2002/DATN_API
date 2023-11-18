@@ -1,6 +1,5 @@
 package com.example.DATN_API.Reponsitories;
 
-
 import com.example.DATN_API.Entity.Account;
 import com.example.DATN_API.Entity.Product;
 import com.example.DATN_API.Entity.Rate;
@@ -22,6 +21,4 @@ public interface RateRepository extends JpaRepository<Rate, Integer> {
     @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END FROM Rate r " +
             "WHERE r.account_rate = :account AND r.product_rate = :product")
     boolean existsByAccount_rateAndProduct_rate(@Param("account") Account account, @Param("product") Product product);
-
-
 }

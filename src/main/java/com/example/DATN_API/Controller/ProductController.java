@@ -14,6 +14,9 @@ import com.example.DATN_API.Reponsitories.ProductReponsitory;
 import com.example.DATN_API.Service.ShopService;
 import com.example.DATN_API.Service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -137,66 +140,6 @@ public class ProductController {
 		}
 
 	}
-//    @GetMapping("/find")
-//    public ResponseEntity<ResponObject> find(@RequestParam String key, @RequestParam String valueKeyword,
-//                                             @RequestParam String idCategoryItem, @RequestParam String minQuantity, @RequestParam String maxQuantity,
-//                                             @RequestParam String status) {
-//
-//        List<Product> products = productService.findAll();
-//        int max = Integer.parseInt(maxQuantity);
-//        int min = Integer.parseInt(minQuantity);
-//
-//        if (min >= 0 && max >= 0 && max >= min) {
-//            try {
-//                if (key.equals("id")) {
-//                    if (idCategoryItem.equals("") || idCategoryItem == null) {
-//                        if ((minQuantity.equals("") || minQuantity.equals("0"))
-//                                && (maxQuantity.equals("") || maxQuantity.equals("0"))) {
-//                            products = productService.findByKey(Integer.parseInt(valueKeyword), 0, 99999, "", status);
-//                        } else {
-//                            products = productService.findByKey(Integer.parseInt(valueKeyword), Integer.parseInt(minQuantity),
-//                                    Integer.parseInt(maxQuantity), "", status);
-//                        }
-//                    } else {
-//                        if ((minQuantity.equals("") || minQuantity.equals("0"))
-//                                && (maxQuantity.equals("") || maxQuantity.equals("0"))) {
-//                            products = productService.findByKey(Integer.parseInt(valueKeyword), 0, 99999, idCategoryItem, status);
-//                        } else {
-//                            products = productService.findByKey(Integer.parseInt(valueKeyword), Integer.parseInt(minQuantity),
-//                                    Integer.parseInt(maxQuantity), idCategoryItem, status);
-//                        }
-//                    }
-//                } else {
-//                    if (idCategoryItem.equals("") || idCategoryItem == null) {
-//                        if ((minQuantity.equals("") || minQuantity.equals("0"))
-//                                && (maxQuantity.equals("") || maxQuantity.equals("0"))) {
-//                            products = productService.findByProductName(valueKeyword, 0, 99999, "", status);
-//                        } else {
-//                            products = productService.findByProductName(valueKeyword, Integer.parseInt(minQuantity),
-//                                    Integer.parseInt(maxQuantity), "", status);
-//                        }
-//                    } else {
-//                        if ((minQuantity.equals("") || minQuantity.equals("0"))
-//                                && (maxQuantity.equals("") || maxQuantity.equals("0"))) {
-//                            products = productService.findByProductName(valueKeyword, 0, 99999, idCategoryItem, status);
-//                        } else {
-//                            products = productService.findByProductName(valueKeyword, Integer.parseInt(minQuantity),
-//                                    Integer.parseInt(maxQuantity), idCategoryItem, status);
-//                        }
-//                    }
-//                }
-//                return new ResponseEntity<>(new ResponObject("success", "Load sản phẩm thành công!", products),
-//                        HttpStatus.OK);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                return new ResponseEntity<>(new ResponObject("error", "Load sản phẩm thất bại!", products),
-//                        HttpStatus.OK);
-//            }
-//        } else {
-//            return new ResponseEntity<>(new ResponObject("error", "Số lượng tìm kiếm không hợp lệ!", products),
-//                    HttpStatus.OK);
-//        }
-//    }
 
 	@GetMapping("/top10")
 	public ResponseEntity<List<Object[]>> getTop10Products() {
@@ -210,6 +153,47 @@ public class ProductController {
 		}
 	}
 
+// Hiển thị những sản phẩm tương tự theo categoryItem_product
+@GetMapping("/{id}/similar-products")
+public ResponseEntity<ResponObject> findSimilarProducts(@PathVariable("id") Integer id) {
+	if (productService.existsById(id)) {
+		List<Product> similarProducts = productReponsitory.findSimilarProducts(id);
+		Object responseData = new Object[] { "similarProducts", similarProducts };
+		return new ResponseEntity<>(new ResponObject("SUCCESS", "Similar products retrieved successfully.", responseData), HttpStatus.OK);
+	}
 
+	return new ResponseEntity<>(new ResponObject("NOT_FOUND", "Product with id: " + id + " not found.", null), HttpStatus.NOT_FOUND);
+}
 
+//
+//	@GetMapping("/search")
+//	public ResponseEntity<Page<Product>> searchProductsByName(
+//			@RequestParam("name") String productName,
+//			@RequestParam(name = "page", defaultValue = "0") int page,
+//			@RequestParam(name = "size", defaultValue = "10") int size
+//	) {
+//		Pageable pageable = PageRequest.of(page, size);
+//		Page<Product> result = productReponsitory.searchByNamePaginated(productName, pageable);
+//
+//		if (result.isEmpty()) {
+//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//		}
+//
+//		return new ResponseEntity<>(result, HttpStatus.OK);
+//	}
+//
+//	@GetMapping("/paginated")
+//	public ResponseEntity<Page<Product>> getAllPaginated(
+//			@RequestParam(name = "page", defaultValue = "0") int page,
+//			@RequestParam(name = "size", defaultValue = "10") int size
+//	) {
+//		Pageable pageable = PageRequest.of(page, size);
+//		Page<Product> result = productReponsitory.findAllPaginated(pageable);
+//
+//		if (result.isEmpty()) {
+//			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//		}
+//
+//		return new ResponseEntity<>(result, HttpStatus.OK);
+//	}
 }
