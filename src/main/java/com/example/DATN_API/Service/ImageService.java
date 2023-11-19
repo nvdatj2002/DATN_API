@@ -120,7 +120,16 @@ public class ImageService implements IStorageSerivce{
         System.out.println("imgaes size : "+getImages().size());
     }
 
-    public void removeImageByIndex(int index){
-        images.remove(index);
+    public static void deleteFile(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            if (file.delete()) {
+                System.out.println("File đã được xóa thành công!");
+            } else {
+                System.out.println("Không thể xóa file.");
+            }
+        } else {
+            System.out.println("File không tồn tại.");
+        }
     }
 }

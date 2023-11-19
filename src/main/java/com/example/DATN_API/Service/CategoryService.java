@@ -42,6 +42,7 @@ public class CategoryService {
     public Boolean deleteCategory(int id) {
         Category category = findByIdCategory(id);
         if (category.getListCategory().size()<1) {
+            ImageService.deleteFile("/uploads/"+category.getImage());
             CategoryReponsitory.deleteById(id);
             return true;
         } else {
