@@ -22,15 +22,21 @@ public class Shop {
 
     private String shop_name;
 
-    @OneToOne()
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_account")
+    @JsonIgnore
     private Account accountShop;
 
     private String image;
     private Date create_date;
     @OneToOne(mappedBy = "shopAddress")
     private AddressShop addressShop;
+
     private int status;
     @OneToMany(mappedBy = "shop")
+
     private List<Product> products;
+
+    @OneToMany(mappedBy = "shopOrder")
+    private List<Order> listOrder;
 }

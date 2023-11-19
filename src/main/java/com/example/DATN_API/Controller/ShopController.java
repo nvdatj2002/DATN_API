@@ -1,6 +1,7 @@
 package com.example.DATN_API.Controller;
 import com.example.DATN_API.Entity.Shop;
 import com.example.DATN_API.Entity.ResponObject;
+import com.example.DATN_API.Service.AccountService;
 import com.example.DATN_API.Service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/shop")
@@ -17,9 +17,29 @@ import java.util.Optional;
 public class ShopController {
     @Autowired
     ShopService shopService;
-
+    @Autowired
+    AccountService accountService;
+    @GetMapping("/findAll")
+    public ResponseEntity<ResponObject> findAll(){
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponObject(
+                "SUCCESS","find shop by product",accountService.findAll()
+        ));
+    }
+    @GetMapping("/findByProduct/{id}")
+    public ResponseEntity<ResponObject> findByProduct(@PathVariable("id") int idProduct){
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponObject(
+                "SUCCESS","find shop by product",shopService.findShopByProduct(idProduct)
+        ));
+    }
+    @GetMapping("/get/{id}")
+    public ResponseEntity<ResponObject> findById(@PathVariable("id") int idShop){
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponObject(
+                "SUCCESS","find shop by product",shopService.findById(idShop)
+        ));
+    }
     @GetMapping()
     public ResponseEntity<List<Shop>> getAll() {
+
         return new ResponseEntity<>(shopService.findAll(), HttpStatus.OK);
     }
 
@@ -32,7 +52,8 @@ public class ShopController {
     }
 
     @PostMapping()
-    public ResponseEntity<ResponObject> create(@RequestParam("image") MultipartFile image, @RequestParam("shopName") String Shopname, @RequestParam("idAccount") Integer idAccount) {
+    public ResponseEntity<ResponObject> create(@RequestParam("image") MultipartFile
+                                                           image, @RequestParam("shopName") String Shopname, @RequestParam("idAccount") Integer idAccount) {
 
 
 //        Shop shopnew = shopService.createShop(shop);
@@ -60,3 +81,4 @@ public class ShopController {
 //    }
 
 }
+

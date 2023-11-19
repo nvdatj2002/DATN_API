@@ -48,6 +48,7 @@ public class Product {
     @OneToOne(mappedBy = "product_like")
     private LikeProduct likeProduct;
 
+
     @OneToMany(mappedBy = "productOrder")
     private List<OrderDetail> listOrderDetail;
 
@@ -55,3 +56,4 @@ public class Product {
     public List<Storage> listStorage;
 
 }
+

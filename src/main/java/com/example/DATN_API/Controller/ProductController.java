@@ -26,8 +26,23 @@ public class ProductController {
 	@Autowired
 	StorageService storageService;
 
+
+    @GetMapping("/findAll")
+    public ResponseEntity<ResponObject> findAll(@RequestParam("offset") Optional<Integer> offSet,
+                                                @RequestParam("sizePage") Optional<Integer>  sizePage,
+                                                @RequestParam("sort") Optional<String> sort,
+                                                @RequestParam("status") Optional<Integer> status ){
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponObject(
+                "SUCCESS","FIND ALL PRODUCT",productService.getPageProduct(status,offSet,sizePage,sort)
+        ));
+    }
 	@GetMapping()
-	public ResponseEntity<List<Product>> getAll(@RequestParam("status") Optional<String> getstatus,@RequestParam("shop") Optional<Integer> idshop) {
+	public ResponseEntity<List<Product>> getAll() {
+		return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
+	}
+
+	@GetMapping("/getByShop")
+	public ResponseEntity<List<Product>> getAllbyShop(@RequestParam("status") Optional<String> getstatus,@RequestParam("shop") Optional<Integer> idshop) {
 		String status = getstatus.orElse("");
 		Shop shop=shopService.findById(idshop.orElse(0));
 		if (status.equals("isactive")) {
@@ -54,6 +69,7 @@ public class ProductController {
 		return new ResponseEntity<>(new ResponObject("success", "Thêm thành công.", productnew),
 				HttpStatus.CREATED);
 	}
+
 
 	@PutMapping("{id}")
 	public ResponseEntity<ResponObject> update(@PathVariable("id") Integer id, @RequestBody Product product) {
@@ -171,5 +187,23 @@ public class ProductController {
 		}
 	}
 
+
+
+    @PutMapping("/verify/{id}")
+    public ResponseEntity<ResponObject> verifyProduct(@PathVariable("id") Integer id) {
+        Product product = productService.findById(id);
+        product.setStatus(1);
+        productService.createProduct(product);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "verify product succsess", product),
+                HttpStatus.CREATED);
+    }
+    @PutMapping("/ban/{id}")
+    public ResponseEntity<ResponObject> banProduct(@PathVariable("id") Integer id) {
+        Product product = productService.findById(id);
+        product.setStatus(2);
+        productService.createProduct(product);
+        return new ResponseEntity<>(new ResponObject("SUCCESS", "ban product succsess", product),
+                HttpStatus.CREATED);
+    }
 
 }

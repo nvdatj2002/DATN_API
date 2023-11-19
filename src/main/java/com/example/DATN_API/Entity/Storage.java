@@ -20,6 +20,7 @@ public class Storage {
 
     private int quantity;
 
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "id_product")
