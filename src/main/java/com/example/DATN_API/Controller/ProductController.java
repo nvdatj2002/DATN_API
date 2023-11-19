@@ -36,17 +36,22 @@ public class ProductController {
                 "SUCCESS","FIND ALL PRODUCT",productService.getPageProduct(status,offSet,sizePage,sort)
         ));
     }
-
-
 	@GetMapping()
-	public ResponseEntity<List<Product>> getAll(@RequestParam("status") Optional<String> getstatus) {
-		String status = getstatus.orElse("");
-		if (status.equals("isactive")) {
-			return new ResponseEntity<>(productService.findProductbyStatus(1), HttpStatus.OK);
-		} else if (status.equals("unactive")) {
-			return new ResponseEntity<>(productService.findProductbyStatus(2), HttpStatus.OK);
-		}
+	public ResponseEntity<List<Product>> getAll() {
+
 		return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
+	}
+
+	@GetMapping("/getByShop")
+	public ResponseEntity<List<Product>> getAllbyShop(@RequestParam("status") Optional<String> getstatus,@RequestParam("shop") Optional<Integer> idshop) {
+		String status = getstatus.orElse("");
+		Shop shop=shopService.findById(idshop.orElse(0));
+		if (status.equals("isactive")) {
+			return new ResponseEntity<>(productService.findProductbyStatus(1,shop), HttpStatus.OK);
+		} else if (status.equals("unactive")) {
+			return new ResponseEntity<>(productService.findProductbyStatus(2,shop), HttpStatus.OK);
+		}
+		return new ResponseEntity<>(productService.findAll(shop), HttpStatus.OK);
 	}
 
 	@GetMapping("{id}")

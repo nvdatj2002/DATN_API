@@ -18,7 +18,6 @@ import com.example.DATN_API.Reponsitories.ProductReponsitory;
 public class ProductService {
 	@Autowired
 	ProductReponsitory productReponsitory;
-
 	public List<Product> findAll() {
 		return productReponsitory.findAll();
 	}
@@ -26,6 +25,9 @@ public class ProductService {
 		return productReponsitory.findAllByShop(shop);
 	}
 
+	public List<Product> findProductbyStatus(int status,Shop shop) {
+		return productReponsitory.getProductbyStatus(status,shop);
+	}
 	public List<Product> findProductbyStatus(int status) {
 		return productReponsitory.getProductbyStatus(status);
 	}

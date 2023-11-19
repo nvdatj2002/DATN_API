@@ -22,8 +22,6 @@ public class AddressAccount {
     @JsonIgnore
     @JoinColumn(name = "id_account")
     private Account Addressaccount;
-    private String name;
-    private String phone;
     private String city;
     private String district;
     private String ward;

@@ -1,6 +1,7 @@
 package com.example.DATN_API.Controller;
 import com.example.DATN_API.Entity.Shop;
 import com.example.DATN_API.Entity.ResponObject;
+import com.example.DATN_API.Service.AccountService;
 import com.example.DATN_API.Service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +17,12 @@ import java.util.List;
 public class ShopController {
     @Autowired
     ShopService shopService;
+    @Autowired
+    AccountService accountService;
     @GetMapping("/findAll")
     public ResponseEntity<ResponObject> findAll(){
         return ResponseEntity.status(HttpStatus.OK).body(new ResponObject(
-                "SUCCESS","find shop by product",shopService.findAll()
+                "SUCCESS","find shop by product",accountService.findAll()
         ));
     }
     @GetMapping("/findByProduct/{id}")

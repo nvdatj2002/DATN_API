@@ -4,6 +4,7 @@ package com.example.DATN_API.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.DATN_API.Entity.Account;
 import com.example.DATN_API.Entity.Shop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class ShopService {
 
     public List<Shop> findAll() {
         return ShopReponsitory.findAll();
+    }
+    public Shop findShop(Account account) {
+        return ShopReponsitory.findShopByAccount(account);
     }
 
     public Shop findById(int id) {

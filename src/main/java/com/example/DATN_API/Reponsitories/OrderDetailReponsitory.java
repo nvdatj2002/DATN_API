@@ -10,7 +10,7 @@ public interface OrderDetailReponsitory extends JpaRepository<OrderDetail, Integ
     @Query("Select o FROM OrderDetail o WHERE o.orders.id = ?1")
     List<OrderDetail> findByIdOrder(int idOrder);
 
-    @Query("Select o, odt, p FROM OrderCustomer o"
+    @Query("Select o, odt, p FROM Order o"
             + " JOIN o.orderDetails odt JOIN o.status st"
             + " JOIN odt.productOrder p JOIN p.shop s WHERE s.id = ?1")
     List<Object[]> getTotalByMonth(int idShop);

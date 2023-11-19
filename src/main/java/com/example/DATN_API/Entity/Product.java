@@ -43,7 +43,6 @@ public class Product {
 
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "id_category_item")
     private CategoryItem categoryItem_product;
 

@@ -9,12 +9,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class AccountService {
     @Autowired
     AccountReponsitory accountReponsitory;
+
+    public List<Account> findAll(){
+        return accountReponsitory.findAll();
+    }
     public Page<Account> findAll(Optional<Integer> offset, Optional<Integer> sp, Optional<String> field){
         String sort = field.orElse("create_date");
         int itemStart = offset.orElse(0);;

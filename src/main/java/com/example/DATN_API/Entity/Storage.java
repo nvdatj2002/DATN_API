@@ -23,7 +23,6 @@ public class Storage {
 
     @ManyToOne
     @JsonIgnore
-
     @JoinColumn(name = "id_product")
     private Product product;
 

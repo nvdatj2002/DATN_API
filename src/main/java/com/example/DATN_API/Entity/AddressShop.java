@@ -17,7 +17,6 @@ public class AddressShop {
     private int id;
 
     @OneToOne
-
     @JoinColumn(name = "id_shop")
     @JsonIgnore
     private Shop shopAddress;
