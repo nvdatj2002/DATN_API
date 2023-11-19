@@ -41,4 +41,8 @@ public class ShopService {
 	public Boolean existsById(Integer id) {
 		return ShopReponsitory.existsById(id) ? true : false;
 	}
+
+	public Shop findShopByProduct(int idProduct){
+		return ShopReponsitory.findShopByProduct(idProduct);
+	}
 }

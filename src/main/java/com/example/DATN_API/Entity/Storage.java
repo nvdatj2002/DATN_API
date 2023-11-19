@@ -21,7 +21,6 @@ public class Storage {
     private int quantity;
 
     @OneToOne
-    @JsonIgnore
     @JoinColumn(name = "id_product")
     private Product id_Product;
 

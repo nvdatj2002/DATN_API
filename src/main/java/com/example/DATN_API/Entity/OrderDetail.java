@@ -18,15 +18,14 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 //
-//    @ManyToOne
-//    @JoinColumn(name = "id_order")
-//    @JsonBackReference
-//    private Order orders;
+    @ManyToOne
+    @JoinColumn(name = "id_order")
+    @JsonBackReference
+    private Order orders;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_product")
     private Product productOrder;
-
 
     private int quantity;
 }

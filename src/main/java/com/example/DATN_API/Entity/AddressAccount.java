@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,10 +22,15 @@ public class AddressAccount {
     @JsonIgnore
     @JoinColumn(name = "id_account")
     private Account Addressaccount;
-
+    private String name;
+    private String phone;
     private String city;
     private String district;
     private String ward;
     private String address;
     private boolean status;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "address")
+    @JsonIgnore
+    List<Order> orders;
 }

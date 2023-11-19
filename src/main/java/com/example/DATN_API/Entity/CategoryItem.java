@@ -39,6 +39,5 @@ public class CategoryItem {
     private Account account;
 
     @OneToMany(mappedBy = "categoryItem_product")
-    @JsonIgnore
     List<Product> products;
 }

@@ -37,6 +37,15 @@ public class ProductController {
         return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/findAll")
+    public ResponseEntity<ResponObject> findAll(@RequestParam("offset") Optional<Integer> offSet,
+                                                @RequestParam("sizePage") Optional<Integer>  sizePage,
+                                                @RequestParam("sort") Optional<String> sort,
+                                                @RequestParam("status") Optional<Integer> status ){
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponObject(
+                "SUCCESS","FIND ALL PRODUCT",productService.getPageProduct(status,offSet,sizePage,sort)
+        ));
+    }
     @GetMapping("{id}")
     public ResponseEntity<Product> findById(@PathVariable Integer id) {
         if (productService.existsById(id)) {
@@ -52,7 +61,6 @@ public class ProductController {
         Product productnew = productService.createProduct(product);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "Product has been added.", productnew),
                 HttpStatus.CREATED);
-
     }
 
     @PutMapping("{id}")
@@ -100,6 +108,7 @@ public class ProductController {
     public ResponseEntity<ResponObject> verifyProduct(@PathVariable("id") Integer id) {
         Product product = productService.findById(id);
         product.setStatus(1);
+        productService.createProduct(product);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "verify product succsess", product),
                 HttpStatus.CREATED);
     }
@@ -107,6 +116,7 @@ public class ProductController {
     public ResponseEntity<ResponObject> banProduct(@PathVariable("id") Integer id) {
         Product product = productService.findById(id);
         product.setStatus(2);
+        productService.createProduct(product);
         return new ResponseEntity<>(new ResponObject("SUCCESS", "ban product succsess", product),
                 HttpStatus.CREATED);
     }

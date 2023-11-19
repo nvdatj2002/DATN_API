@@ -4,6 +4,9 @@ import java.util.Optional;
 
 import com.example.DATN_API.Entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.DATN_API.Reponsitories.ProductReponsitory;
@@ -18,6 +21,14 @@ public class ProductService {
 
 	public List<Product> findProductbyStatus(int status) {
 		return productReponsitory.getProductbyStatus(status);
+	}
+	public Page<Product> getPageProduct(Optional<Integer> stt,Optional<Integer> offset, Optional<Integer> sp, Optional<String> field){
+		String sort = field.orElse("create_date");
+		int itemStart = offset.orElse(0);;
+		int sizePage = sp.orElse(20);
+		int status = sp.orElse(1);
+
+		return productReponsitory.getPageProduct(status,PageRequest.of(itemStart,sizePage, Sort.Direction.DESC,sort));
 	}
 
 

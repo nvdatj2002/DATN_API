@@ -1,6 +1,8 @@
 package com.example.DATN_API.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +22,7 @@ public class Account {
     private int id;
     private String username;
     private String password;
-    private Date createdate;
+    private Date create_date;
     private boolean status;
 
 
@@ -38,6 +40,7 @@ public class Account {
     @OneToOne(mappedBy = "Infaccount")
     private InfoAccount infoAccount;
 
+
     @OneToMany(mappedBy = "Addressaccount")
     private List<AddressAccount> address_account;
 
@@ -46,7 +49,8 @@ public class Account {
     private List<LikeProduct> likeProductes;
 
     @OneToMany(mappedBy = "accountOrder")
-    @JsonIgnore
     private List<Order> orders;
 
+    @OneToMany(mappedBy = "account_check")
+    List<StatusOrder> statusOrders;
 }

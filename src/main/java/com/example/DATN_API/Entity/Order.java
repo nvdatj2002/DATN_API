@@ -1,5 +1,6 @@
 package com.example.DATN_API.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "order")
+@Table(name = "tbl_order")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,18 +25,26 @@ public class Order {
 
     private Date create_date;
 
-    private String address;
+    @ManyToOne
+    @JoinColumn(name = "id_address_order")
+    private AddressAccount address;
+
 
     @OneToMany(mappedBy = "order")
     private List<StatusOrder> status;
 
     private boolean pay;
-//@JsonManagedReference
-//    @OneToMany(mappedBy = "orders")
-//    private List<OrderDetail> orderDetails;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "orders")
+    private List<OrderDetail> orderDetails;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_account")
     @JsonIgnore
     private Account accountOrder;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_shop")
+    @JsonIgnore
+    private Shop shopOrder;
 }

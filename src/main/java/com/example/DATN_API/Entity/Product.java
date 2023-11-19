@@ -43,6 +43,7 @@ public class Product {
 
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "id_category_item")
     private CategoryItem categoryItem_product;
 
@@ -50,10 +51,11 @@ public class Product {
     private LikeProduct likeProduct;
 
     @OneToOne(mappedBy = "id_Product")
+    @JsonIgnore
     private Storage storage;
 
-
-    @OneToOne(mappedBy = "productOrder")
-    private OrderDetail orderDetail;
+    @JsonIgnore
+    @OneToMany(mappedBy = "productOrder")
+    private List<OrderDetail> orderDetails;
 
 }
