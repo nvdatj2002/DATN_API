@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.example.DATN_API.Entity.Product;
+import com.example.DATN_API.Entity.Shop;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,12 @@ public class ProductService {
 	@Autowired
 	ProductReponsitory productReponsitory;
 
-	public List<Product> findAll() {
-		return productReponsitory.findAll();
+	public List<Product> findAll(Shop shop) {
+		return productReponsitory.findAllByShop(shop);
 	}
 
-	public List<Product> findProductbyStatus(int status) {
-		return productReponsitory.getProductbyStatus(status);
+	public List<Product> findProductbyStatus(int status,Shop shop) {
+		return productReponsitory.getProductbyStatus(status,shop);
 	}
 
 	public Product findById(int id) {
@@ -64,11 +65,11 @@ public class ProductService {
 		return productReponsitory.existsById(id) ? true : false;
 	}
 
-	public List<Product> findByKey(String keyword, String idCategoryItem, String status) {
-		return productReponsitory.findByKey(keyword, idCategoryItem, status);
+	public List<Product> findByKey(String keyword, String idCategoryItem, String status, Shop shop) {
+		return productReponsitory.findByKey(keyword, idCategoryItem, status,shop);
 	}
 
-	public List<Product> findByProductName(String keyword, String idCategoryItem, String status) {
-		return productReponsitory.findByProductName(keyword, idCategoryItem, status);
+	public List<Product> findByProductName(String keyword, String idCategoryItem, String status,Shop shop) {
+		return productReponsitory.findByProductName(keyword, idCategoryItem, status,shop);
 	}
 }

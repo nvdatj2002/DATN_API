@@ -21,7 +21,6 @@ public class Product {
     private int id;
 
     @ManyToOne
-
     @JoinColumn(name = "id_shop")
     @JsonIgnore
     private Shop shop;

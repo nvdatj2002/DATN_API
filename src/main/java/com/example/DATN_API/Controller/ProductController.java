@@ -27,14 +27,15 @@ public class ProductController {
 	StorageService storageService;
 
 	@GetMapping()
-	public ResponseEntity<List<Product>> getAll(@RequestParam("status") Optional<String> getstatus) {
+	public ResponseEntity<List<Product>> getAll(@RequestParam("status") Optional<String> getstatus,@RequestParam("shop") Optional<Integer> idshop) {
 		String status = getstatus.orElse("");
+		Shop shop=shopService.findById(idshop.orElse(0));
 		if (status.equals("isactive")) {
-			return new ResponseEntity<>(productService.findProductbyStatus(1), HttpStatus.OK);
+			return new ResponseEntity<>(productService.findProductbyStatus(1,shop), HttpStatus.OK);
 		} else if (status.equals("unactive")) {
-			return new ResponseEntity<>(productService.findProductbyStatus(2), HttpStatus.OK);
+			return new ResponseEntity<>(productService.findProductbyStatus(2,shop), HttpStatus.OK);
 		}
-		return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
+		return new ResponseEntity<>(productService.findAll(shop), HttpStatus.OK);
 	}
 
 	@GetMapping("{id}")
@@ -101,24 +102,24 @@ public class ProductController {
 	@GetMapping("/find")
 	public ResponseEntity<ResponObject> find(@RequestParam String key, @RequestParam String valueKeyword,
 											 @RequestParam String idCategoryItem, @RequestParam String minQuantity, @RequestParam String maxQuantity,
-											 @RequestParam String status, @RequestParam String stocking) {
-
-		List<Product> products = productService.findAll();
+											 @RequestParam String status, @RequestParam String stocking, @RequestParam("shop") int idshop) {
+		Shop shop = shopService.findById(idshop);
+		List<Product> products = productService.findAll(shop);
 		List<Object[]> listProduct = new ArrayList<>();
 
 		if (key.equals("id")) {
 			if (idCategoryItem.equals("") || idCategoryItem == null) {
-				products = productService.findByKey(valueKeyword, "", status);
+				products = productService.findByKey(valueKeyword, "", status,shop);
 			} else {
 
-				products = productService.findByKey(valueKeyword, idCategoryItem, status);
+				products = productService.findByKey(valueKeyword, idCategoryItem, status,shop);
 
 			}
 		} else {
 			if (idCategoryItem.equals("") || idCategoryItem == null) {
-				products = productService.findByProductName(valueKeyword, "", status);
+				products = productService.findByProductName(valueKeyword, "", status,shop);
 			} else {
-				products = productService.findByProductName(valueKeyword, idCategoryItem, status);
+				products = productService.findByProductName(valueKeyword, idCategoryItem, status,shop);
 			}
 		}
 		for (Product p : products) {
