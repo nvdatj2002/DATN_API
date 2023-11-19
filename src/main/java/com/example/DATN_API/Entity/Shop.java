@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -27,11 +28,13 @@ public class Shop {
     private Account accountShop;
 
     private String image;
-
+    private Date create_date;
     @OneToOne(mappedBy = "shopAddress")
     private AddressShop addressShop;
 
-    @OneToMany(fetch=FetchType.LAZY,mappedBy = "shop")
+    private int status;
+    @OneToMany(mappedBy = "shop")
+
     private List<Product> products;
 
     @OneToMany(mappedBy = "shopOrder")

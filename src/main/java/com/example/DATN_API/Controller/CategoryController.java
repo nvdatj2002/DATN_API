@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/category")
-@CrossOrigin("*")
+@CrossOrigin()
 public class CategoryController {
     @Autowired
     CategoryService CategoryService;
@@ -28,15 +28,18 @@ public class CategoryController {
 
     @GetMapping()
     public ResponseEntity<List<Category>> getAll() {
-        return new ResponseEntity<>(CategoryService.findAllCategory(), HttpStatus.OK);
+        List<Category> categories = CategoryService.findAll();
+        for (Category category : categories) {
+            category.removeDuplicateCategoryItems();
+        }
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<Category> findById(@PathVariable Integer id) {
-        if (CategoryService.existsByIdCategory(id)) {
-            return new ResponseEntity<>(CategoryService.findByIdCategory(id), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Category categories = CategoryService.findByIdCategory(id);
+        categories.removeDuplicateCategoryItems();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @PostMapping()
@@ -50,7 +53,7 @@ public class CategoryController {
         category.setType_category(type_category);
         category.setCreate_date(create_date);
         Category newcate = CategoryService.createCategory(category);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been added.", newcate),
+        return new ResponseEntity<>(new ResponObject("success", "Thêm thành công.", newcate),
                 HttpStatus.CREATED);
     }
 
@@ -84,16 +87,15 @@ public class CategoryController {
             categorysave.setType_category(type_categorysave);
             CategoryService.updateCategory(categorysave);
         }
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been updated.", categorysave), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponObject("success", "Cập nhật thành công.", categorysave), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<ResponObject> delete(@PathVariable Integer id) {
-        if (!CategoryService.existsByIdCategory(id))
-            return new ResponseEntity<>(new ResponObject("NOT_FOUND", "Category_id: " + id + " does not exists.", id),
-                    HttpStatus.NOT_FOUND);
-        CategoryService.deleteCategory(id);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "Category has been deleted.", id), HttpStatus.OK);
+        if (CategoryService.deleteCategory(id)) {
+            return new ResponseEntity<>(new ResponObject("success", "Xóa thành công.", id), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponObject("error", "Có lỗi xảy ra.", id), HttpStatus.OK);
     }
 
 
@@ -121,8 +123,8 @@ public class CategoryController {
         newcategoryItem.setAccount(accountsave);
         newcategoryItem.setCreate_date(create_date);
         newcategoryItem.setStatus(true);
-        CategoryService.createCategoryItem(newcategoryItem);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", newcategoryItem),
+        CategoryItem newItem = CategoryService.createCategoryItem(newcategoryItem);
+        return new ResponseEntity<>(new ResponObject("success", "Thêm thành công.", newItem),
                 HttpStatus.CREATED);
     }
 
@@ -143,17 +145,17 @@ public class CategoryController {
             categoryItemold.setCategory(categorysave);
         }
         CategoryItem newcategoryItem = CategoryService.updateCategoryItem(categoryItemold);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been added.", newcategoryItem),
-                HttpStatus.CREATED);
+        return new ResponseEntity<>(new ResponObject("success", "Cập nhật thành công.", newcategoryItem),
+                HttpStatus.OK);
     }
 
     @DeleteMapping("/categoryItem/{id}")
-    public ResponseEntity<ResponObject> deleteCategoryItem(@PathVariable Integer id) {
-        if (!CategoryService.existsByIdCategoryItem(id))
-            return new ResponseEntity<>(new ResponObject("NOT_FOUND", "CategoryItem_id: " + id + " does not exists.", id),
-                    HttpStatus.NOT_FOUND);
-        CategoryService.deleteCategoryItem(id);
-        return new ResponseEntity<>(new ResponObject("SUCCESS", "CategoryItem has been deleted.", id), HttpStatus.OK);
+    public ResponseEntity<ResponObject> deleteCategoryItem(@PathVariable("id") Integer id) {
+        if (CategoryService.deleteCategoryItem(id)) {
+            return new ResponseEntity<>(new ResponObject("success", "Xóa thành công.", id), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new ResponObject("error", "Có lỗi xảy ra.", id), HttpStatus.OK);
+
     }
 
 }

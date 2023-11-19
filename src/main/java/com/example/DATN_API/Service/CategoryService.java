@@ -22,7 +22,7 @@ public class CategoryService {
     @Autowired
     AccountReponsitory accountReponsitory;
 
-    public List<Category> findAllCategory() {
+    public List<Category> findAll() {
         return CategoryReponsitory.findAll();
     }
 
@@ -39,8 +39,14 @@ public class CategoryService {
         return CategoryReponsitory.save(Category);
     }
 
-    public void deleteCategory(int id) {
-        CategoryReponsitory.deleteById(id);
+    public Boolean deleteCategory(int id) {
+        Category category = findByIdCategory(id);
+        if (category.getListCategory().size()<1) {
+            CategoryReponsitory.deleteById(id);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Boolean existsByIdCategory(Integer id) {
@@ -59,15 +65,36 @@ public class CategoryService {
     }
 
     public CategoryItem createCategoryItem(CategoryItem Category) {
-        return CategoryItemReponsitory.save(Category);
+        try {
+            return CategoryItemReponsitory.save(Category);
+        }catch (Exception e){
+            LogError.saveToLog(e);
+        }
+        return null;
     }
 
     public CategoryItem updateCategoryItem(CategoryItem CategoryItem) {
-        return CategoryItemReponsitory.save(CategoryItem);
+        try {
+            return CategoryItemReponsitory.save(CategoryItem);
+        }catch (Exception e){
+            LogError.saveToLog(e);
+        }
+        return null;
     }
 
-    public void deleteCategoryItem(int id) {
-        CategoryItemReponsitory.deleteById(id);
+    public Boolean deleteCategoryItem(int id) {
+        try {
+            CategoryItem categoryItem = findByIdCategoryItem(id);
+            if (categoryItem.getProducts().size()<1) {
+                CategoryItemReponsitory.deleteById(id);
+                return true;
+            } else {
+                return false;
+            }
+        }catch (Exception e){
+            LogError.saveToLog(e);
+        }
+        return false;
     }
 
     public Boolean existsByIdCategoryItem(Integer id) {

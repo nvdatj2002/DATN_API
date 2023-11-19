@@ -5,18 +5,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.util.*;
 
-import java.util.Date;
-import java.util.List;
-
-@SuppressWarnings("serial")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "category_item")
-
 public class CategoryItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +23,7 @@ public class CategoryItem {
     private Category category;
 
     private String type_category_item;
-
     private Date create_date;
-
     private Boolean status;
 
     @ManyToOne
@@ -41,3 +34,4 @@ public class CategoryItem {
     @OneToMany(mappedBy = "categoryItem_product")
     List<Product> products;
 }
+

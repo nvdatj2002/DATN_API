@@ -1,8 +1,11 @@
 package com.example.DATN_API.Service;
+
 import java.util.List;
 import java.util.Optional;
 
 import com.example.DATN_API.Entity.Product;
+import com.example.DATN_API.Entity.Shop;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.DATN_API.Reponsitories.ProductReponsitory;
+
 @Service
 public class ProductService {
 	@Autowired
@@ -17,6 +21,9 @@ public class ProductService {
 
 	public List<Product> findAll() {
 		return productReponsitory.findAll();
+	}
+	public List<Product> findAll(Shop shop) {
+		return productReponsitory.findAllByShop(shop);
 	}
 
 	public List<Product> findProductbyStatus(int status) {
@@ -31,40 +38,39 @@ public class ProductService {
 		return productReponsitory.getPageProduct(status,PageRequest.of(itemStart,sizePage, Sort.Direction.DESC,sort));
 	}
 
-
 	public Product findById(int id) {
 		Optional<Product> product = productReponsitory.findById(id);
 		return product.get();
 	}
-	
+
 	public Product createProduct(Product product) {
 		try {
-			Product productsave= productReponsitory.save(product);
+			Product productsave = productReponsitory.save(product);
 			return productsave;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			LogError.saveToLog(e);
 		}
 		return null;
 	}
-	
-	public Product updateProduct(int id,Product product) {
-		Product productold=findById(id);
+
+	public Product updateProduct(int id, Product product) {
+		Product productold = findById(id);
 		product.setId(id);
 		product.setShop(productold.getShop());
 		product.setCreate_date(productold.getCreate_date());
 		product.setStart_promotion(productold.getStart_promotion());
 		product.setEnd_promotion(productold.getEnd_promotion());
 		try {
-			Product productsave= productReponsitory.save(product);
+			Product productsave = productReponsitory.save(product);
 			return productsave;
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			LogError.saveToLog(e);
 		}
 		return null;
 	}
-	
+
 	public void deleteProduct(int id) {
 		productReponsitory.deleteById(id);
 	}
@@ -72,4 +78,14 @@ public class ProductService {
 	public Boolean existsById(Integer id) {
 		return productReponsitory.existsById(id) ? true : false;
 	}
+
+	public List<Product> findByKey(String keyword, String idCategoryItem, String status, Shop shop) {
+		return productReponsitory.findByKey(keyword, idCategoryItem, status, shop);
+	}
+
+	public List<Product> findByProductName(String keyword, String idCategoryItem, String status, Shop shop) {
+		return productReponsitory.findByProductName(keyword, idCategoryItem, status, shop);
+	}
+
+
 }

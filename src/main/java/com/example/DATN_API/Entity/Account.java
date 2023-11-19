@@ -27,14 +27,13 @@ public class Account {
 
 
     @OneToMany(mappedBy = "accountCreateCategory")
-    @JsonIgnore
     public List<Category> listCategory;
 
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "account")
-//    public List<CategoryItem> listCategoryItem;
+    @OneToMany(mappedBy = "account")
+    public List<CategoryItem> listCategoryItem;
 
     @OneToOne(mappedBy = "accountShop")
+    @JsonIgnore
     private Shop shop;
 
     @OneToOne(mappedBy = "Infaccount")

@@ -1,16 +1,11 @@
 package com.example.DATN_API.Entity;
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -25,11 +20,28 @@ public class Category {
     private Date create_date;
     private String image;
     private Boolean status;
+
     @OneToMany(mappedBy = "category")
-    public List<CategoryItem> listCategory;
+    private List<CategoryItem> listCategory;
 
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "id_account")
     private Account accountCreateCategory;
+
+    public void removeDuplicateCategoryItems() {
+        if (listCategory != null) {
+            Set<Integer> seenIds = new HashSet<>();
+            List<CategoryItem> uniqueCategoryItems = new ArrayList<>();
+
+            for (CategoryItem categoryItem : listCategory) {
+                if (seenIds.add(categoryItem.getId())) {
+                    uniqueCategoryItems.add(categoryItem);
+                }
+            }
+            listCategory.clear();
+            listCategory.addAll(uniqueCategoryItems);
+        }
+    }
 }
+

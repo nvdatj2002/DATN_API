@@ -25,6 +25,7 @@ public class OrderDetail {
 
     @ManyToOne
     @JoinColumn(name = "id_product")
+    @JsonIgnore
     private Product productOrder;
 
     private int quantity;

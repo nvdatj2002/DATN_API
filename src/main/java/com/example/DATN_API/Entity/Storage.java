@@ -20,9 +20,12 @@ public class Storage {
 
     private int quantity;
 
-    @OneToOne
+
+    @ManyToOne
+    @JsonIgnore
+
     @JoinColumn(name = "id_product")
-    private Product id_Product;
+    private Product product;
 
     private Date create_date;
 }
