@@ -11,6 +11,8 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,18 +22,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.DATN_API.Entity.Account;
-import com.example.DATN_API.Entity.Role;
 import com.example.DATN_API.Entity.AddressShop;
 import com.example.DATN_API.Entity.InfoAccount;
 import com.example.DATN_API.Entity.MailInformation;
 import com.example.DATN_API.Entity.ResponObject;
-import com.example.DATN_API.Entity.Shop;
+import com.example.DATN_API.Entity.Role;
 import com.example.DATN_API.Entity.RoleAccount;
-import com.example.DATN_API.Service.RoleAccountService;
+import com.example.DATN_API.Entity.Shop;
 import com.example.DATN_API.Service.AccountService;
 import com.example.DATN_API.Service.AddressShopService;
 import com.example.DATN_API.Service.InfoAccountService;
 import com.example.DATN_API.Service.MailServiceImplement;
+import com.example.DATN_API.Service.RoleAccountService;
 import com.example.DATN_API.Service.ShopService;
 
 @RestController
@@ -54,12 +56,9 @@ public class AccountController {
 
 	@Autowired
 	MailServiceImplement mailServiceImplement;
-	
+
 	@Autowired
 	RoleAccountService roleAccService;
-
-//	@Autowired
-//	BCryptPasswordEncoder encoder;
 
 	@GetMapping()
 	public ResponseEntity<ResponObject> getAll() {
@@ -75,25 +74,31 @@ public class AccountController {
 	public ResponseEntity<Map<String, Object>> login(@RequestBody Account account) {
 		Map<String, Object> response = new HashMap<>();
 		try {
+//			PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 			Account accounts = accountService.findByUsername(account.getUsername());
-			if (account.getUsername().equals(accounts.getUsername())
-					&& account.getPassword().equals(accounts.getPassword()) && accounts.isStatus() == false) {
-				response.put("success", true);
-				response.put("message", "ĐĂNG NHẬP THÀNH CÔNG!");
-				response.put("data", account);
-			} else {
-				if (account.getUsername().equals(accounts.getUsername())
-						&& !account.getPassword().equals(accounts.getPassword())) {
-					response.put("message", "MẬT KHẨU KHÔNG HỢP LỆ!");
-				} else if (accounts.isStatus() == true) {
-					response.put("message",
-							"TÀI KHOẢN BẠN ĐĂNG NHẬP HIỆN TẠI ĐANG BỊ KHÓA, VUI LÒNG LIÊN HỆ CHO QUẢN TRỊ VIÊN NẾU GẶP VẪN ĐỀ!");
+			if (accounts != null) {
+				if (/*passwordEncoder.matches(account.getPasswword(), accounts.getPassword())*/account.getPassword().equals(accounts.getPassword()) && accounts.isStatus() == false) {
+					response.put("success", true);
+					response.put("message", "ĐĂNG NHẬP THÀNH CÔNG!");
+					response.put("data", account);
 				} else {
-					response.put("message", "ĐÚNG MỖI CÁI NỊT!");
+					if (account.getUsername().equals(accounts.getUsername())
+							&& !account.getPassword().equals(accounts.getPassword())) {
+						response.put("message", "MẬT KHẨU KHÔNG HỢP LỆ!");
+						response.put("success", false);
+
+					} else if (accounts.isStatus() == true) {
+						response.put("message",
+								"TÀI KHOẢN BẠN ĐĂNG NHẬP HIỆN TẠI ĐANG BỊ KHÓA, VUI LÒNG LIÊN HỆ CHO QUẢN TRỊ VIÊN NẾU GẶP VẪN ĐỀ!");
+						response.put("success", false);
+					}
 				}
-				response.put("success", false);
-				response.put("data", account);
+				
+			}else {
+					response.put("message", "TÀI KHOẢN KHÔNG CHÍNH XÁC!");
+					response.put("success", false);
 			}
+			response.put("data", account);
 		} catch (Exception e) {
 			response.put("message", "TÊN ĐĂNG NHẬP KHÔNG HỢP LỆ!");
 			e.printStackTrace();
@@ -150,9 +155,8 @@ public class AccountController {
 			account.setPassword(newpassword);
 			accountService.createAccount(account);
 			response.put("message", "ĐẶT LẠI MẬT KHẨU THÀNH CÔNG!");
-
 		} catch (Exception e) {
-			e.printStackTrace();
+
 		}
 		return ResponseEntity.ok(response);
 	}
@@ -162,6 +166,7 @@ public class AccountController {
 			@RequestBody Account account) {
 		Map<String, Object> response = new HashMap<>();
 		try {
+//			PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 			Account accounts = accountService.findByUsername(account.getUsername());
 			Account createAcc = new Account();
 			RoleAccount roleAcc = new RoleAccount();
@@ -172,12 +177,16 @@ public class AccountController {
 			// Begin validate
 			if (accounts != null) {
 				response.put("message", " TÊN TÀI KHOẢN ĐÃ TỒN TẠI!");
+				response.put("success", false);
 			} else if (account.getUsername().length() < 6) {
 				response.put("message", "TÊN TÀI KHOẢN QUÁ NGẮN!");
+				response.put("success", false);
 			} else if (account.getPassword().length() < 6) {
 				response.put("message", "MẬT KHẨU QUÁ NGẮN!");
+				response.put("success", false);
 			} else if (infoAccountService.findByEmail(email) != null) {
 				response.put("message", "EMAIL NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
+				response.put("success", false);
 			} else {
 				// Account
 				createAcc.setUsername(account.getUsername());
@@ -257,12 +266,12 @@ public class AccountController {
 		return ResponseEntity.ok(response);
 	}
 
-	@PostMapping("/profile")
-	public ResponseEntity<InfoAccount> profileAccount() {
-		if (infoAccountService.findById_account(5) != null) {
-			return new ResponseEntity<>(infoAccountService.findById_account(5), HttpStatus.OK);
+	@GetMapping("/profile/{id_account}")
+	public ResponseEntity<InfoAccount> getInfoAccount(@PathVariable("id_account") int id_account) {
+		if (infoAccountService.findById_account(id_account) != null) {
+			return new ResponseEntity<>(infoAccountService.findById_account(id_account), HttpStatus.OK);
 		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@PostMapping("/updateprofile/{username}")
@@ -280,18 +289,24 @@ public class AccountController {
 			InfoAccount inCheck2 = infoAccountService.findByIdCard(inAccount.getId_card());
 			if (inAccount.getPhone().length() != 10) {
 				response.put("message", "SỐ ĐIỆN THOẠI KHÔNG HỢP LỆ!");
+				response.put("success", false);
 			} else if (!inAccount.getPhone().substring(0, 1).equals("0")) {
 				response.put("message", "SỐ ĐIỆN THOẠI KHÔNG HỢP LỆ!");
+				response.put("success", false);
 			} else if (inCheck1 != null && inCheck1.getInfaccount().getId() != account.getId()) {
 				response.put("message", "SỐ ĐIỆN THOẠI NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
+				response.put("success", false);
 			} else if (inAccount.getId_card().length() != 12) {
 				response.put("message", "SỐ CĂN CƯỚC CÔNG DÂN KHÔNG HỢP LỆ!");
 			} else if (inCheck2 != null && inCheck2.getInfaccount().getId() != account.getId()) {
 				response.put("message", "SỐ CĂN CƯỚC CÔNG DÂN NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
+				response.put("success", false);
 			} else if (Pattern.compile(regexPattern).matcher(inAccount.getEmail()).matches() != true) {
 				response.put("message", "EMAIL KHÔNG HỢP LỆ!");
+				response.put("success", false);
 			} else if (inCheck != null && inCheck.getInfaccount().getId() != account.getId()) {
 				response.put("message", "EMAIL NÀY ĐÃ ĐƯỢC SỬ DỤNG CHO MỘT TÀI KHOẢN KHÁC!");
+				response.put("success", false);
 			} else {
 				int phone = Integer.parseInt(inAccount.getPhone());
 				inAccount.setInfaccount(account);
@@ -303,6 +318,7 @@ public class AccountController {
 		} catch (NumberFormatException e) {
 			response.put("message",
 					"SAI ĐỊNH DẠNG SỐ ĐIỆN THOẠI, VUI LÒNG CHỈ NHẬP CÁC SỐ 0 - 9 VÀ KHÔNG NHẬP QUÁ 10 SỐ!");
+			response.put("success", false);
 			e.printStackTrace();
 		} catch (Exception e) {
 			response.put("message", "Lỗi CẬP NHẬT PROFILE!");
@@ -318,8 +334,10 @@ public class AccountController {
 			Account accounts = accountService.findByUsername(account.getUsername());
 			if (account.getPassword().equals("")) {
 				response.put("message", "VUI LÒNG NHẬP MẬT KHẨU CŨ!");
+				response.put("success", false);
 			} else if (account.getPassword().length() < 6) {
 				response.put("message", "MẬT KHẨU QUÁ NGẮN!");
+				response.put("success", false);
 			} else {
 				accounts.setPassword(account.getPassword());
 				accountService.changePass(accounts);
@@ -329,6 +347,7 @@ public class AccountController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.put("message", "LỖI THAY ĐỔI MẬT KHẨU");
+			response.put("success", false);
 		}
 		return ResponseEntity.ok(response);
 	}
@@ -345,6 +364,7 @@ public class AccountController {
 			if (shops != null) {
 				response.put("message",
 						"BẠN ĐÃ GỬI 1 YÊU CẦU ĐĂNG KÝ LÊN HỆ THỐNG, VUI LÒNG CHỜ PHẢN HỒI TỪ CHÚNG TÔI ĐỂ TIẾP TỤC!");
+				response.put("success", false);
 			} else {
 				Shop shop = new Shop();
 				// Create shop
@@ -363,6 +383,7 @@ public class AccountController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			response.put("message", "LỖI ĐĂNG KÝ BÁN HÀNG");
+			response.put("success", false);
 		}
 		return ResponseEntity.ok(response);
 	}
