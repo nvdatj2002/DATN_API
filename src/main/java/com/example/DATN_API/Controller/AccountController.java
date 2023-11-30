@@ -1,58 +1,84 @@
 package com.example.DATN_API.Controller;
 
-import com.example.DATN_API.Entity.Account;
-import com.example.DATN_API.Entity.ResponObject;
-import com.example.DATN_API.Reponsitories.AccountReponsitory;
+import com.example.DATN_API.Entity.*;
+
 import com.example.DATN_API.Service.AccountService;
 import com.example.DATN_API.Service.AddressAccountService;
+//import com.example.DATN_API.Service.AuthService;
+import com.example.DATN_API.Service.AuthenticationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/account/")
+@RequestMapping("/api/account")
 @CrossOrigin
+@RequiredArgsConstructor
 public class AccountController {
 
+    private final AuthenticationService authenticationService;
     @Autowired
     AccountService accountService;
     @Autowired
     AddressAccountService addressAccountService;
 
+
     @GetMapping("/getAll")
     public ResponseEntity<ResponObject> getAll(@RequestParam("offset") Optional<Integer> offSet,
-                                               @RequestParam("sizePage") Optional<Integer>  sizePage,
-                                               @RequestParam("sort") Optional<String> sort){
-        Page<Account> accounts = accountService.findAll(offSet,sizePage,sort);
+                                               @RequestParam("sizePage") Optional<Integer> sizePage,
+                                               @RequestParam("sort") Optional<String> sort) {
+        Page<Account> accounts = accountService.findAll(offSet, sizePage, sort);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponObject(
-                        "SUCCESS","GET ALL ACCOUNT",accounts
+                        "SUCCESS", "GET ALL ACCOUNT", accounts
                 )
         );
-
-
     }
+
+
     @GetMapping("/{id}")
-    public ResponseEntity<ResponObject> getAccountById(@PathVariable("id") Integer id){
+    public ResponseEntity<ResponObject> getAccountById(@PathVariable("id") Integer id) {
         return ResponseEntity.status(HttpStatus.OK).body(new ResponObject(
-                "SUCCESS","get by id successfully",accountService.findAccountById(id)
-        ));
-    }
-    @GetMapping("/{id}/address")
-    public ResponseEntity<ResponObject> getAddressDefault(@PathVariable("id") int id){
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponObject(
-                "SUCCESS","get address default by id successfully",addressAccountService.getAddressDefault(id)
+                "SUCCESS", "get by id successfully", accountService.findAccountById(id)
         ));
     }
 
+    @GetMapping("/{id}/address")
+    public ResponseEntity<ResponObject> getAddressDefault(@PathVariable("id") int id) {
+        return ResponseEntity.status(HttpStatus.OK).body(new ResponObject(
+                "SUCCESS", "get address default by id successfully", addressAccountService.getAddressDefault(id)
+        ));
+    }
+    @PostMapping("/auth/register")
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(authenticationService.register(request));
+    }
+    @PostMapping("/auth/login")
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRqeuest request) {
+        return ResponseEntity.ok(authenticationService.authenticate(request));
+    }
+
+//    @PostMapping("/auth/login")
+//    public LoginRespon login(@RequestBody @Validated LoginRequest request) {
+//        return authService.attemLogin(request.getEmail(), request.getPassword());
+//    }
+//
+//    @GetMapping("/secured")
+//    public String secured(@AuthenticationPrincipal LoginRequest userPrincipal) {
+//        return "Login success! " + userPrincipal.getEmail() + " Password : " + userPrincipal.getPassword();
+//    }
+//
+//    @GetMapping("/admin")
+//    public String admin(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+//        System.out.println(userPrincipal.getUsername());
+//        return "you are a admin! ";
+//    }
 //    @GetMapping("/get_account_detail/{username}")
 //    public ResponseEntity<ResponObject> getDetailAccount(@PathVariable("username") String username){
 //        Optional<Account> account = accountReponsitory.findById(username);
@@ -100,4 +126,5 @@ public class AccountController {
 //                "1","delete account successfully",accountSave
 //        ));
 //    }
+
 }

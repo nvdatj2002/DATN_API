@@ -1,5 +1,6 @@
 package com.example.DATN_API.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,8 +18,9 @@ public class RoleAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "id_account")
     private Account account_role;
 
     @OneToOne

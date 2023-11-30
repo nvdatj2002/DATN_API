@@ -201,5 +201,12 @@ public class ProductController {
         return new ResponseEntity<>(new ResponObject("SUCCESS", "ban product succsess", product),
                 HttpStatus.CREATED);
     }
+	@GetMapping("/name/{status}")
+	public ResponseEntity<ResponObject> find(@PathVariable("status") Optional<Integer> stt,@RequestParam("keyword") Optional<String> keyword) {
+		List<Shop> shops = productService.findByName(keyword,stt);
 
-}
+		return ResponseEntity.status(HttpStatus.OK).body(
+				new ResponObject("SUCCESS","find product by name",shops)
+		);
+
+}}

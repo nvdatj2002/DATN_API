@@ -32,4 +32,8 @@ public class AccountService {
         accountReponsitory.save(account);
         return account;
     }
+//    public Account findByUserName(String username) {
+//        Account account = accountReponsitory.findByUserName(username);
+//        return account;
+//    }
 }

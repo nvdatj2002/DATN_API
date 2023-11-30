@@ -21,7 +21,6 @@ public class Product {
     private int id;
 
     @ManyToOne
-
     @JoinColumn(name = "id_shop")
     @JsonIgnore
     private Shop shop;
@@ -52,6 +51,7 @@ public class Product {
 
 
     @OneToMany(mappedBy = "productOrder")
+    @JsonIgnore
     private List<OrderDetail> listOrderDetail;
 
     @OneToMany(mappedBy = "product")
